@@ -13,15 +13,28 @@
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition x:Name="GameSide" Width="5*"/>
-                <ColumnDefinition x:Name="AuxSide" Width="*"/>
+                <ColumnDefinition x:Name="gameSide" Width="5*"/>
+                <ColumnDefinition x:Name="auxSide" Width="*"/>
             </Grid.ColumnDefinitions>
-            <Label Grid.Column="1" x:Name="_score" Content="Score: 000"/>
-
+            <WrapPanel Orientation="Vertical"  Grid.Column="1">
+                <Label x:Name="_score" Content="Score: 000" Margin="10"/>
+                <Button x:Name="btnStart" Content="Start" Margin="10" Click="btnStart_Click"/>
+                <Button x:Name="btnHelp" Content="Solve" Margin="10" Click="btnHelp_Click"/>
+                <Button x:Name="btnEXit" Content="Exit" Margin=" 10" Click="btnEXit_Click"/>
+                <Canvas x:Name="drawingArea">
+                    <Rectangle Width="20" Height="40" Fill="Blue" Canvas.Left="10" Canvas.Top="15"/>
+                </Canvas>
+            </WrapPanel>
             <Border Grid.Column="0" Grid.Row="0" Background="Silver" BorderThickness="2" BorderBrush="DarkGray" Margin="2">
-                <Grid Background="Aqua" Margin="10">                                        
-                        <Label Content="Start"/>
-                        <Label Content="Finsh" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>                  
+                <Grid Background="Aqua" Margin="10">
+                    <StackPanel x:Name="draw1" Grid.Row="0" Height="150" >
+                        <Canvas x:Name="draw2" Background="Azure" Opacity="80" Margin="2">
+                            <Image Name="myImage" Height="150" Width="150" Stretch="Fill"/>
+                            <Ellipse Fill="Chartreuse" Width="20" Height="50"/>
+                        </Canvas>
+                    </StackPanel>
+                    <Label Content="Start"/>
+                    <Label Content="Finsh" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
                 </Grid>
             </Border>            
         </Grid>
