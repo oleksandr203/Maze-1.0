@@ -40,16 +40,11 @@ namespace Maze_1._0
             RenderTargetBitmap bmp2 = new RenderTargetBitmap(50, 50, 40, 40, PixelFormats.Pbgra32);
             bmp.Render(drawingVisual);
 
-
             shapeToDraw = new Rectangle() { Fill = Brushes.Green, Height = 35, Width = 35, RadiusX = 10, RadiusY = 10 };
             Canvas.SetLeft(shapeToDraw, 20);
             Canvas.SetTop(shapeToDraw, 25);
             bmp2.Render(drawingVisual);
-            drawingArea.Children.Add(shapeToDraw);
-
-            //drawingArea.Children.Add((Shape)shapeToDraw);
-            //myImage.Source = bmp;
-            draw2.Children.Add(myImage);           
+            drawingCanvas.Children.Add(shapeToDraw);        
 
         }
 
@@ -61,6 +56,11 @@ namespace Maze_1._0
         }
 
         private void btnHelp_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void drawingCanvas_Loaded(object sender, RoutedEventArgs e)
         {
 
         }
