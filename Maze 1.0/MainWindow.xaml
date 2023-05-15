@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:Maze_1._0"
         mc:Ignorable="d"        
         Title="MainWindow" Width="650" Height="800" MinWidth="650" MinHeight="600" 
-        FontFamily="Segue UI Light" FontSize="16" WindowStartupLocation="CenterScreen">
+        FontFamily="Segue UI Light" FontSize="16" WindowStartupLocation="CenterScreen"
+        KeyDown="Window_KeyDown">
     <Grid>
         <Grid.Background>
             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -32,12 +33,13 @@
                 <Button x:Name="btnHelp" Content="Solve" Margin="10" Click="btnHelp_Click"/>
                 <Button x:Name="btnEXit" Content="Exit" Margin=" 10" Click="btnEXit_Click"/>               
             </WrapPanel>
-            <Viewbox Grid.Column="1" Grid.Row="0" Margin="0,0,0,20">
+            <Viewbox Grid.Column="1" Grid.Row="0" Margin="0,5,0,20">
             <Border BorderBrush="DarkGray" Background="DimGray" BorderThickness="4">
                 <Canvas x:Name="drawingCanvas" 
                         Background="Silver" Margin="10" 
-                        MinHeight="600" MinWidth="330"
+                        MinHeight="600" MinWidth="330"                        
                         Loaded="drawingCanvas_Loaded" ClipToBounds="True">
+                    <Image Name="canvasImage"/>
                     <Label Content="Start" HorizontalAlignment="Center" Canvas.Top="1"/>
                     <Label Content="Finsh" VerticalAlignment="Center" Canvas.Bottom="1"/>
                 </Canvas>
@@ -46,6 +48,23 @@
         <StatusBar  x:Name="stBar" Grid.Row="1" Grid.ColumnSpan="3"  BorderThickness="2" VerticalAlignment="Bottom">
             <Label Content="Ready"/>
         </StatusBar>
-                
-    </Grid>  
+        <Grid x:Name="GameOverMenu" Opacity="80" Grid.ColumnSpan="3" Grid.RowSpan="2"
+              Visibility="Hidden">
+            <Grid.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Purple"/>
+                    <GradientStop Color="White" Offset="1"/>
+                    <GradientStop Color="#FF9AA0A1" Offset="0.8"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="GAME OVER" FontSize="48" TextAlignment="Center"/>
+                <TextBlock x:Name="finalTextScore" Text="Final score: " Foreground="DarkRed"
+                           FontSize="30" TextAlignment="Center"/>
+                <Button x:Name="acceptAgain" Content="Try Again" Margin="20" Padding="5" 
+                        Background="AliceBlue" Click="btnStart_Click"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+   
 </Window>
