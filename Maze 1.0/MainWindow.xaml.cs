@@ -76,23 +76,29 @@ namespace Maze_1._0
                     WigthRect += 10;
                     break;
                 case Key.Up:
-                    GerenateImg();
+                    GenImg();
                     break;
                 case Key.Down:
-                    blockSize -= 10;
+                    blockSize += 5;
                     break;
+                default: break;
             }
         }
-        private void GerenateImg()
+        private void GenImg()
         {
             DrawingVisual drawingVisual = new DrawingVisual();
             using (DrawingContext drawingContext = drawingVisual.RenderOpen())
             {
-                drawingContext.DrawRoundedRectangle(Brushes.Yellow, new Pen(Brushes.Black, 5), new Rect(5, 5, 350, blockSize), 20, 20);
+                drawingContext.DrawRoundedRectangle(Brushes.Yellow, new Pen(Brushes.Black, 5), new Rect(5, 5, 275, blockSize), 20, 20);
             }
             RenderTargetBitmap bmp = new RenderTargetBitmap(400, 100, 100, 90, PixelFormats.Pbgra32);
             bmp.Render(drawingVisual);
-            canvasImage.Source = bmp;
+            canvasImage.Source = bmp;            
+        }
+
+        private void Window_KeyUp(object sender, KeyEventArgs e)
+        {
+            GenImg();
         }
     }
     public class CustomVisualFrameworkElement : FrameworkElement

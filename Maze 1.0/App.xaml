@@ -4,6 +4,14 @@
              xmlns:local="clr-namespace:Maze_1._0"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        
+        <ResourceDictionary>
+            <Style x:Key="mazeButtons">
+                <Setter Property = "Control.Height" Value="40"/>
+                <Setter Property = "Control.Width" Value="90"/>
+                <Setter Property = "Control.BorderBrush" Value= "Brown"/>
+                <Setter Property = "Control.BorderThickness" Value="2"/>
+                <Setter Property = "Control.Margin" Value="8"/>
+            </Style>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

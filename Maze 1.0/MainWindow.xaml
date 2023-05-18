@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Maze_1._0"
         mc:Ignorable="d"        
-        Title="MainWindow" Width="650" Height="800" MinWidth="650" MinHeight="600" 
+        Title="MainWindow" Width="800" Height="800" MinWidth="850" MinHeight="600" 
         FontFamily="Segue UI Light" FontSize="16" WindowStartupLocation="CenterScreen"
-        KeyDown="Window_KeyDown">
+        KeyDown="Window_KeyDown" KeyUp="Window_KeyUp">
     <Grid>
         <Grid.Background>
             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -25,30 +25,56 @@
                 <ColumnDefinition x:Name="gameSide" Width="Auto"/>
                 <ColumnDefinition x:Name="rightSide" Width="*"/>
             </Grid.ColumnDefinitions>            
-            <WrapPanel Orientation="Vertical" Grid.Row="0" Grid.Column="2"
+            <WrapPanel Orientation="Vertical" 
+                       Grid.Row="0" Grid.Column="2"
                        HorizontalAlignment="Right">
-                <Label x:Name="_score" Content="Score: 000" Margin="10" 
-                       FontStyle="Italic" Background="DarkGoldenrod"/>
-                <Button x:Name="btnStart" Content="Start" Margin="10"  Click="btnStart_Click"/>
-                <Button x:Name="btnHelp" Content="Solve" Margin="10" Click="btnHelp_Click"/>
-                <Button x:Name="btnEXit" Content="Exit" Margin=" 10" Click="btnEXit_Click"/>               
+            <Button x:Name="btnStart" 
+                    Content="Start" 
+                    Style="{StaticResource mazeButtons}" 
+                    Click="btnStart_Click"/>
+            <Button x:Name="btnHelp" 
+                    Content="Solve"
+                    Style="{StaticResource mazeButtons}"
+                    Click="btnHelp_Click"/>
+            <Button x:Name="btnEXit"
+                    Content="Exit"
+                    Style="{StaticResource mazeButtons}"
+                    Click="btnEXit_Click"/>               
             </WrapPanel>
-            <Viewbox Grid.Column="1" Grid.Row="0" Margin="0,5,0,20">
-            <Border BorderBrush="DarkGray" Background="DimGray" BorderThickness="4">
+            <Viewbox Grid.Column="1"
+                     Grid.Row="0"
+                     Margin="0,5,0,5">
+            <Border BorderBrush="Brown"
+                    Background="DimGray"
+                    BorderThickness="5">
                 <Canvas x:Name="drawingCanvas" 
-                        Background="Silver" Margin="10" 
-                        MinHeight="600" MinWidth="330"                        
-                        Loaded="drawingCanvas_Loaded" ClipToBounds="True">
+                        Background="Silver"
+                        Margin="2" 
+                        MinHeight="600"
+                        MinWidth="500"                        
+                        Loaded="drawingCanvas_Loaded"
+                        ClipToBounds="True">
                     <Image Name="canvasImage"/>
-                    <Label Content="Start" HorizontalAlignment="Center" Canvas.Top="1"/>
-                    <Label Content="Finsh" VerticalAlignment="Center" Canvas.Bottom="1"/>
+                    <Label Content="Start"
+                           HorizontalAlignment="Center"
+                           Canvas.Top="1"/>
+                    <Label Content="Finsh"
+                           VerticalAlignment="Center"
+                           Canvas.Bottom="1"/>
                 </Canvas>
             </Border>                
             </Viewbox>
-        <StatusBar  x:Name="stBar" Grid.Row="1" Grid.ColumnSpan="3"  BorderThickness="2" VerticalAlignment="Bottom">
+        <StatusBar  x:Name="stBar" 
+                    Grid.Row="1"
+                    Grid.ColumnSpan="3"
+                    BorderThickness="2"
+                    VerticalAlignment="Bottom">
             <Label Content="Ready"/>
         </StatusBar>
-        <Grid x:Name="GameOverMenu" Opacity="80" Grid.ColumnSpan="3" Grid.RowSpan="2"
+        <Grid x:Name="GameOverMenu"
+              Opacity="80"
+              Grid.ColumnSpan="3" 
+              Grid.RowSpan="2"
               Visibility="Hidden">
             <Grid.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -57,12 +83,23 @@
                     <GradientStop Color="#FF9AA0A1" Offset="0.8"/>
                 </LinearGradientBrush>
             </Grid.Background>
-            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <TextBlock Text="GAME OVER" FontSize="48" TextAlignment="Center"/>
-                <TextBlock x:Name="finalTextScore" Text="Final score: " Foreground="DarkRed"
-                           FontSize="30" TextAlignment="Center"/>
-                <Button x:Name="acceptAgain" Content="Try Again" Margin="20" Padding="5" 
-                        Background="AliceBlue" Click="btnStart_Click"/>
+            <StackPanel Orientation="Vertical"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                <TextBlock Text="GAME OVER"
+                           FontSize="48"
+                           TextAlignment="Center"/>
+                <TextBlock x:Name="finalTextScore"
+                           Text="Final score: "
+                           Foreground="DarkRed"
+                           FontSize="30"
+                           TextAlignment="Center"/>
+                <Button x:Name="acceptAgain"
+                        Content="Try Again"
+                        Margin="20" 
+                        Padding="5" 
+                        Background="AliceBlue"
+                        Click="btnStart_Click"/>
             </StackPanel>
         </Grid>
     </Grid>
