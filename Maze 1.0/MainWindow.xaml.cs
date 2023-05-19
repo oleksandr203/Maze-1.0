@@ -28,8 +28,22 @@ namespace Maze_1._0
         public MainWindow()
         {
             InitializeComponent();
+            Grid_Set field = new Grid_Set(10, 10);
+            field.CreateGrid();
         }
         
+        private void DrawCanv()  //temporary test
+        {
+            DrawingVisual drawingVisual = new DrawingVisual();
+            using (DrawingContext drawingContext = drawingVisual.RenderOpen())
+            {                
+                drawingContext.DrawRoundedRectangle(Brushes.Yellow, new Pen(Brushes.Black, 3), new Rect(5, 5, 450, 100), 20, 20);                
+            }            
+            RenderTargetBitmap bmp = new RenderTargetBitmap((int)gameFieldCanvas.Height, (int)gameFieldCanvas.Width, 100, 100, PixelFormats.Pbgra32);
+            bmp.Render(drawingVisual);            
+            canvasImage.Source = bmp;
+        }
+
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
             GameOverMenu.Visibility = Visibility.Collapsed;
@@ -40,7 +54,7 @@ namespace Maze_1._0
             Canvas.SetLeft(shapeToDraw, 20);
             Canvas.SetTop(shapeToDraw, 25);
 
-            drawingCanvas.Children.Add(shapeToDraw);                   
+            gameFieldCanvas.Children.Add(shapeToDraw);                   
         }
 
         private void btnEXit_Click(object sender, RoutedEventArgs e)
@@ -57,7 +71,7 @@ namespace Maze_1._0
 
         private void drawingCanvas_Loaded(object sender, RoutedEventArgs e)
         {
-
+            DrawCanv();
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)

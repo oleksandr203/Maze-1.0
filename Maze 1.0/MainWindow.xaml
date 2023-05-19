@@ -47,11 +47,11 @@
             <Border BorderBrush="Brown"
                     Background="DimGray"
                     BorderThickness="5">
-                <Canvas x:Name="drawingCanvas" 
+                <Canvas x:Name="gameFieldCanvas" 
                         Background="Silver"
                         Margin="2" 
-                        MinHeight="600"
-                        MinWidth="500"                        
+                        Height="600"
+                        Width="500"                        
                         Loaded="drawingCanvas_Loaded"
                         ClipToBounds="True">
                     <Image Name="canvasImage"/>
