@@ -21,40 +21,54 @@ namespace Maze_1._0
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
-    {
-        int HeightRect = 35;
-        int WigthRect = 35;
-        int blockSize = 90;
+    {        
         public MainWindow()
         {
             InitializeComponent();
-            Grid_Set field = new Grid_Set(10, 10);
-            field.CreateGrid();
+            
         }
-        
-        private void DrawCanv()  //temporary test
+
+        private void DrawCanv()
         {
+            Pen _pen = new Pen(Brushes.Brown, 2); //to move to xaml form
+            Grid_Set field = new Grid_Set(10, 10, (int)gameFieldCanvas.Width/10);
+            Cell[,] cells = field.GetCells();
+
+
+            for (int c = 0; c < 3; c++)
+            {
+                cells[c, 4].CanMoveDown();
+            }
+            cells[0, 4].CanMoveRight();
+
+
             DrawingVisual drawingVisual = new DrawingVisual();
             using (DrawingContext drawingContext = drawingVisual.RenderOpen())
-            {                
-                drawingContext.DrawRoundedRectangle(Brushes.Yellow, new Pen(Brushes.Black, 3), new Rect(5, 5, 450, 100), 20, 20);                
+            {             
+                for (int r = 0; r < field.Rows; r++)
+                {
+                    for (int c = 0; c < field.Columns; c++)
+                    {
+                        if (cells[c, r].VetricalWall)
+                        {
+                            drawingContext.DrawLine(_pen, cells[c, r].GetPositionRU(), cells[c, r].GetPositionRD());
+                        }
+                        if (cells[c, r].HorizontalWall)
+                        {
+                            drawingContext.DrawLine(_pen, cells[c, r].GetPositionLD(), cells[c, r].GetPositionRD());
+                        }                                               
+                    }
+                }
             }            
-            RenderTargetBitmap bmp = new RenderTargetBitmap((int)gameFieldCanvas.Height, (int)gameFieldCanvas.Width, 100, 100, PixelFormats.Pbgra32);
+            RenderTargetBitmap bmp = new RenderTargetBitmap((int)gameFieldCanvas.Width + 25, (int)gameFieldCanvas.Height + 25, 100, 100, PixelFormats.Pbgra32);
+
             bmp.Render(drawingVisual);            
             canvasImage.Source = bmp;
         }
 
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
-            GameOverMenu.Visibility = Visibility.Collapsed;
-
-            Shape shapeToDraw = null;
-            shapeToDraw = new Rectangle() { Fill = Brushes.Green, Height = HeightRect, Width = WigthRect, RadiusX = 10, RadiusY = 10 };
-
-            Canvas.SetLeft(shapeToDraw, 20);
-            Canvas.SetTop(shapeToDraw, 25);
-
-            gameFieldCanvas.Children.Add(shapeToDraw);                   
+            GameOverMenu.Visibility = Visibility.Collapsed;                          
         }
 
         private void btnEXit_Click(object sender, RoutedEventArgs e)
@@ -81,68 +95,27 @@ namespace Maze_1._0
                 case Key.Enter:
                     MessageBox.Show("Enter");
                     break;
+
                 case Key.Left:
-                    HeightRect += 10;
-                    WigthRect += 10;
+                   
                     break;
+
                 case Key.Right:
-                    HeightRect += 20;
-                    WigthRect += 10;
-                    break;
-                case Key.Up:
-                    GenImg();
-                    break;
+                    
+                    break; 
+                    
                 case Key.Down:
-                    blockSize += 5;
+                   
                     break;
+
                 default: break;
             }
         }
-        private void GenImg()
-        {
-            DrawingVisual drawingVisual = new DrawingVisual();
-            using (DrawingContext drawingContext = drawingVisual.RenderOpen())
-            {
-                drawingContext.DrawRoundedRectangle(Brushes.Yellow, new Pen(Brushes.Black, 5), new Rect(5, 5, 275, blockSize), 20, 20);
-            }
-            RenderTargetBitmap bmp = new RenderTargetBitmap(400, 100, 100, 90, PixelFormats.Pbgra32);
-            bmp.Render(drawingVisual);
-            canvasImage.Source = bmp;            
-        }
-
+       
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {
-            GenImg();
+           
         }
-    }
-    public class CustomVisualFrameworkElement : FrameworkElement
-    {
-        VisualCollection theVisuals;
-        public CustomVisualFrameworkElement()
-        {
-            theVisuals = new VisualCollection(this) { AddRect(), AddCircle() };
-        }
-        private Visual AddCircle()
-        {
-            DrawingVisual drawingVisual = new DrawingVisual();
-            using (DrawingContext drawingContext = drawingVisual.RenderOpen())
-            {
-                Rect rect = new Rect(new Point(160, 100), new Size(320, 80));
-                drawingContext.DrawEllipse(Brushes.DarkBlue, null,
-            new Point(70, 90), 40, 50);
-            }
-            return drawingVisual;
-        }
-        private Visual AddRect()
-        {
-            DrawingVisual drawingVisual = new DrawingVisual();
-            using (DrawingContext drawingContext = drawingVisual.RenderOpen())
-            {
-                Rect rect = new Rect(new Point(160, 100), new Size(320, 80));
-                drawingContext.DrawRectangle(Brushes.Tomato, null, rect);
-            }
-            return drawingVisual;
-        }
-    }
+    }    
 }
 

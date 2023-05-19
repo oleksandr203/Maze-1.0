@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Maze_1._0
 {
@@ -10,11 +11,16 @@ namespace Maze_1._0
     {
         public int X { get; }
         public int Y { get; }
-        private readonly int _y;        
-        public Position(int x, int y)
+               
+        public Position(int c, int r)
         {
-            X = x;
-            Y = y;
+            X = c;
+            Y = r;
+        }
+
+        public Point GetPosition()
+        {
+            return new Point(X, Y);
         }
     }
 }
