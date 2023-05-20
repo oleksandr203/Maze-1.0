@@ -31,9 +31,8 @@ namespace Maze_1._0
         private void DrawCanv()
         {
             Pen _pen = new Pen(Brushes.Brown, 2); //to move to xaml form
-            Grid_Set field = new Grid_Set(10, 10, (int)gameFieldCanvas.Width/10);
+            Grid_Set field = new Grid_Set(12, 14, (int)gameFieldCanvas.Width/10);
             Cell[,] cells = field.GetCells();
-
 
             for (int c = 0; c < 3; c++)
             {
@@ -41,14 +40,13 @@ namespace Maze_1._0
             }
             cells[0, 4].CanMoveRight();
 
-
             DrawingVisual drawingVisual = new DrawingVisual();
             using (DrawingContext drawingContext = drawingVisual.RenderOpen())
-            {             
-                for (int r = 0; r < field.Rows; r++)
+            {
+                for (int c = 0; c < field.Columns; c++)
                 {
-                    for (int c = 0; c < field.Columns; c++)
-                    {
+                    for (int r = 0; r < field.Rows; r++)
+                    {                    
                         if (cells[c, r].VetricalWall)
                         {
                             drawingContext.DrawLine(_pen, cells[c, r].GetPositionRU(), cells[c, r].GetPositionRD());

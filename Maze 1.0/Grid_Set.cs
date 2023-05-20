@@ -18,14 +18,14 @@ namespace Maze_1._0
             Rows = rows;
             Columns = columns;
 
-            gridOfCells = new Cell[Rows, Columns]; 
+            gridOfCells = new Cell[Columns, Rows]; 
             for (int r = 0; r < rows; r++ )
             {
                 for (int c = 0; c < columns; c++ )
                 {
-                    gridOfCells[r, c] = new Cell(r, c, sizeOfCell);
-                    gridOfCells[r, c].CanNotMoveDown();
-                    gridOfCells[r, c].CanNotMoveRight();
+                    gridOfCells[c, r] = new Cell(r, c, sizeOfCell);
+                    gridOfCells[c, r].CanNotMoveDown();
+                    gridOfCells[c, r].CanNotMoveRight();
                 }
             }            
         }
