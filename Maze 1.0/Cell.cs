@@ -17,6 +17,7 @@ namespace Maze_1._0
         public bool HorizontalWall { get; private set; }
         public bool IsStartCell { get; private set; }
         public bool IsFinishCell { get; private set; }
+        public int Id { get; private set; }
 
         public Cell(int column, int row, int sizeOfCell) 
         {             
@@ -32,6 +33,7 @@ namespace Maze_1._0
             if(!IsStartCell)
             {
                 IsStartCell = true;
+                Id = 1;
             }
         }
 
@@ -40,8 +42,20 @@ namespace Maze_1._0
             if (!IsFinishCell)
             {
                 IsFinishCell = true;
+                Id = 2;
             }
+        }
 
+        public void SetFlagCell()
+        {
+            if (Id != 3)
+            {
+                Id = 3;
+            }
+        }
+        public void SetEmptyCell()
+        {
+             Id = 0;
         }
 
         public void CanMoveRight()
@@ -95,5 +109,10 @@ namespace Maze_1._0
             return new Point(X + SizeOfCell, Y + SizeOfCell);
         }
 
+        public Point GetPositionCenter()
+        {
+            return new Point(X + SizeOfCell/2 , Y + SizeOfCell/2);
+        }
+        
     }
 }
