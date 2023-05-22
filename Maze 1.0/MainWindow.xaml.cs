@@ -30,17 +30,12 @@ namespace Maze_1._0
 
         private void DrawCanv()
         {
-            int rows = 14;
+            int rows = 12;
             int columns = 10;
-            Pen _pen = new Pen(Brushes.Brown, 2); //to move to xaml form?
-            Grid_Set field = new Grid_Set(columns, rows, (int)gameFieldCanvas.Width/10);
-            Cell[,] cells = field.GetCells();
-
-            for (int r = 0; r < 3; r++) //here will be logic method
-            {
-                cells[r, 4].CanMoveDown();
-            }
-            cells[0, 4].CanMoveRight();
+            int sizeOfCell = (int)gameFieldCanvas.Width / columns;
+            Pen _pen = new Pen(Brushes.Brown, 1); //to move to xaml form?
+            GridGameState field = new GridGameState(columns, rows, sizeOfCell);
+            Cell[,] cells = field.GetCellsShot();
 
             DrawingVisual drawingVisual = new DrawingVisual();
             using (DrawingContext drawingContext = drawingVisual.RenderOpen())
@@ -48,7 +43,7 @@ namespace Maze_1._0
                 for (int c = 0; c < field.Columns; c++)
                 {
                     for (int r = 0; r < field.Rows; r++)
-                    {                    
+                    {
                         if (cells[c, r].VetricalWall)
                         {
                             drawingContext.DrawLine(_pen, cells[c, r].GetPositionRU(), cells[c, r].GetPositionRD());
@@ -56,21 +51,21 @@ namespace Maze_1._0
                         if (cells[c, r].HorizontalWall)
                         {
                             drawingContext.DrawLine(_pen, cells[c, r].GetPositionLD(), cells[c, r].GetPositionRD());
-                        }  
-                        if (cells[c, r].IsStartCell)
+                        }
+                        if (cells[c, r].Id == 1)
                         {
-                            drawingContext.DrawEllipse(Brushes.Aquamarine, _pen, cells[c, r].GetPositionLU(), 20, 20);
+                            drawingContext.DrawEllipse(Brushes.Aquamarine, _pen, cells[c, r].GetPositionCenter(), 20, 20);
                         }
                         if (cells[c, r].IsFinishCell)
                         {
-                            drawingContext.DrawEllipse(Brushes.BlueViolet, _pen, cells[c, r].GetPositionLU(), 20, 20);
+                            drawingContext.DrawEllipse(Brushes.BlueViolet, _pen, cells[c, r].GetPositionCenter(), 20, 20);
                         }
                     }
                 }
-            }            
+            }
             RenderTargetBitmap bmp = new RenderTargetBitmap((int)gameFieldCanvas.Width + 25, (int)gameFieldCanvas.Height + 25, 100, 100, PixelFormats.Pbgra32);
 
-            bmp.Render(drawingVisual);            
+            bmp.Render(drawingVisual);
             canvasImage.Source = bmp;
         }
 
