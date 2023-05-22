@@ -15,7 +15,8 @@ namespace Maze_1._0
               
         public bool VetricalWall{ get; private set; }
         public bool HorizontalWall { get; private set; }
-
+        public bool IsStartCell { get; private set; }
+        public bool IsFinishCell { get; private set; }
 
         public Cell(int column, int row, int sizeOfCell) 
         {             
@@ -24,6 +25,23 @@ namespace Maze_1._0
             Y = row * sizeOfCell;
             HorizontalWall = true;
             VetricalWall = true;
+        }
+
+        public void SetStartCell()
+        {
+            if(!IsStartCell)
+            {
+                IsStartCell = true;
+            }
+        }
+
+        public void SetFinishCell()
+        {
+            if (!IsFinishCell)
+            {
+                IsFinishCell = true;
+            }
+
         }
 
         public void CanMoveRight()

@@ -12,7 +12,8 @@
                 <Setter Property = "Control.BorderThickness" Value="2"/>
                 <Setter Property = "Control.Margin" Value="8"/>
                 <Setter Property = "ItemsControl.FontSize" Value="18"/>
-            </Style>
+            </Style>           
+            
         </ResourceDictionary>
     </Application.Resources>
 </Application>

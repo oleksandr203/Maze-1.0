@@ -30,13 +30,15 @@ namespace Maze_1._0
 
         private void DrawCanv()
         {
-            Pen _pen = new Pen(Brushes.Brown, 2); //to move to xaml form
-            Grid_Set field = new Grid_Set(12, 14, (int)gameFieldCanvas.Width/10);
+            int rows = 14;
+            int columns = 10;
+            Pen _pen = new Pen(Brushes.Brown, 2); //to move to xaml form?
+            Grid_Set field = new Grid_Set(columns, rows, (int)gameFieldCanvas.Width/10);
             Cell[,] cells = field.GetCells();
 
-            for (int c = 0; c < 3; c++)
+            for (int r = 0; r < 3; r++) //here will be logic method
             {
-                cells[c, 4].CanMoveDown();
+                cells[r, 4].CanMoveDown();
             }
             cells[0, 4].CanMoveRight();
 
@@ -54,7 +56,15 @@ namespace Maze_1._0
                         if (cells[c, r].HorizontalWall)
                         {
                             drawingContext.DrawLine(_pen, cells[c, r].GetPositionLD(), cells[c, r].GetPositionRD());
-                        }                                               
+                        }  
+                        if (cells[c, r].IsStartCell)
+                        {
+                            drawingContext.DrawEllipse(Brushes.Aquamarine, _pen, cells[c, r].GetPositionLU(), 20, 20);
+                        }
+                        if (cells[c, r].IsFinishCell)
+                        {
+                            drawingContext.DrawEllipse(Brushes.BlueViolet, _pen, cells[c, r].GetPositionLU(), 20, 20);
+                        }
                     }
                 }
             }            
@@ -108,12 +118,8 @@ namespace Maze_1._0
 
                 default: break;
             }
-        }
-       
-        private void Window_KeyUp(object sender, KeyEventArgs e)
-        {
-           
-        }
+        }       
+        
     }    
 }
 
