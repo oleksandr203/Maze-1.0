@@ -9,6 +9,7 @@ namespace Maze_1._0
 {
     public class GridGameState
     {
+        int a;
         Cell[,] gridOfCells;
         Cell currentCell;
         Cell nextCell;
