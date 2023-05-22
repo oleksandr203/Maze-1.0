@@ -21,20 +21,19 @@ namespace Maze_1._0
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
-    {        
+    {
+        int rows = 12;
+        int columns = 10;
+        int sizeOfCell = 50;
         public MainWindow()
         {
-            InitializeComponent();
-            
+            InitializeComponent();            
         }
-
+       
         private void DrawCanv()
-        {
-            int rows = 12;
-            int columns = 10;
-            int sizeOfCell = (int)gameFieldCanvas.Width / columns;
+        {           
             Pen _pen = new Pen(Brushes.Brown, 1); //to move to xaml form?
-            GridGameState field = new GridGameState(columns, rows, sizeOfCell);
+            GridGameState field = new GridGameState(columns, rows);
             Cell[,] cells = field.GetCellsShot();
 
             DrawingVisual drawingVisual = new DrawingVisual();
@@ -46,19 +45,21 @@ namespace Maze_1._0
                     {
                         if (cells[c, r].VetricalWall)
                         {
-                            drawingContext.DrawLine(_pen, cells[c, r].GetPositionRU(), cells[c, r].GetPositionRD());
+                            drawingContext.DrawLine(_pen, PointScaleConvertUpRight(cells[c, r].GetPosition()),
+                                PointScaleConvertDownRight(cells[c, r].GetPosition()));
                         }
                         if (cells[c, r].HorizontalWall)
                         {
-                            drawingContext.DrawLine(_pen, cells[c, r].GetPositionLD(), cells[c, r].GetPositionRD());
+                            drawingContext.DrawLine(_pen, PointScaleConvertDownLeft(cells[c, r].GetPosition()),
+                                PointScaleConvertDownRight(cells[c, r].GetPosition()));
                         }
                         if (cells[c, r].Id == 1)
                         {
-                            drawingContext.DrawEllipse(Brushes.Aquamarine, _pen, cells[c, r].GetPositionCenter(), 20, 20);
+                            drawingContext.DrawEllipse(Brushes.Aquamarine, _pen, PointScaleConvertCenterCell(cells[c, r].GetPosition()), sizeOfCell/2, 20);
                         }
                         if (cells[c, r].IsFinishCell)
                         {
-                            drawingContext.DrawEllipse(Brushes.BlueViolet, _pen, cells[c, r].GetPositionCenter(), 20, 20);
+                            drawingContext.DrawEllipse(Brushes.BlueViolet, _pen, PointScaleConvertCenterCell(cells[c, r].GetPosition()), sizeOfCell / 2, 20);
                         }
                     }
                 }
@@ -67,6 +68,44 @@ namespace Maze_1._0
 
             bmp.Render(drawingVisual);
             canvasImage.Source = bmp;
+        }
+
+        public Point PointScaleConvertUpLeft(Point p)
+        {
+            Point point = new Point(p.X, p.Y);
+            point.X = p.X * sizeOfCell;
+            point.Y = p.Y * sizeOfCell;
+            return point;
+        }
+
+        public Point PointScaleConvertUpRight(Point p)
+        {
+            Point point = new Point(p.X, p.Y);
+            point.X = p.X * sizeOfCell + sizeOfCell;
+            point.Y = p.Y * sizeOfCell;
+            return point;
+        }
+        public Point PointScaleConvertDownLeft(Point p)
+        {
+            Point point = new Point(p.X, p.Y);
+            point.X = p.X * sizeOfCell;
+            point.Y = p.Y * sizeOfCell + sizeOfCell;
+            return point;
+        }
+
+        public Point PointScaleConvertDownRight(Point p)
+        {
+            Point point = new Point(p.X, p.Y);
+            point.X = p.X * sizeOfCell + sizeOfCell;
+            point.Y = p.Y * sizeOfCell + sizeOfCell;
+            return point;
+        }
+        public Point PointScaleConvertCenterCell(Point p)
+        {
+            Point point = new Point(p.X, p.Y);
+            point.X = p.X * sizeOfCell + sizeOfCell/2;
+            point.Y = p.Y * sizeOfCell + sizeOfCell/2;
+            return point;
         }
 
         private void btnStart_Click(object sender, RoutedEventArgs e)

@@ -9,7 +9,6 @@ namespace Maze_1._0
 {
     public class Cell
     {
-        public int SizeOfCell { get; private set; }
         public int X { get; private set; }
         public int Y { get; private set; }
               
@@ -19,11 +18,10 @@ namespace Maze_1._0
         public bool IsFinishCell { get; private set; }
         public int Id { get; private set; }
 
-        public Cell(int column, int row, int sizeOfCell) 
-        {             
-            SizeOfCell = sizeOfCell;
-            X = column * sizeOfCell;
-            Y = row * sizeOfCell;
+        public Cell(int column, int row) 
+        { 
+            X = column;
+            Y = row;
             HorizontalWall = true;
             VetricalWall = true;
         }
@@ -89,30 +87,9 @@ namespace Maze_1._0
             }           
         }
 
-        public Point GetPositionLU()
+        public Point GetPosition()
         {
             return new Point(X, Y);
-        }
-
-        public Point GetPositionLD()
-        {
-            return new Point(X, Y + SizeOfCell);
-        }
-
-        public Point GetPositionRU()
-        {
-            return new Point(X + SizeOfCell, Y);
-        }
-
-        public Point GetPositionRD()
-        {
-            return new Point(X + SizeOfCell, Y + SizeOfCell);
-        }
-
-        public Point GetPositionCenter()
-        {
-            return new Point(X + SizeOfCell/2 , Y + SizeOfCell/2);
-        }
-        
+        }        
     }
 }

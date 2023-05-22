@@ -11,6 +11,11 @@ namespace Maze_1._0
     {
         Cell[,] gridOfCells;
         Cell currentCell;
+        Cell currentCellRevers;
+        Cell upperOfCurrent;
+        Cell lowerOfCurrent;
+        Cell rightOfCurrent;
+        Cell leftOfCurrent;
         Cell nextCell;
         Cell startCell;
         Cell finishCell;
@@ -18,100 +23,119 @@ namespace Maze_1._0
         public int Columns { get; private set; }
         public int Rows { get; private set; }
 
-        public GridGameState(int columns, int rows, int sizeOfCell)
+        public GridGameState(int columns, int rows)
         {
             Columns = columns;
             Rows = rows;
-
             gridOfCells = new Cell[Columns, Rows];
 
             for (int r = 0; r < rows; r++)
             {
                 for (int c = 0; c < columns; c++)
                 {
-                    gridOfCells[c, r] = new Cell(c, r, sizeOfCell);
+                    gridOfCells[c, r] = new Cell(c, r);
                     gridOfCells[c, r].SetEmptyCell();
                     gridOfCells[c, r].CanNotMoveDown();
                     gridOfCells[c, r].CanNotMoveRight();
                 }
             }            
-            PathMaze();            
+            GeneratePathOfMaze();            
         }
 
-        private void PathMaze() //logic here
+        private void GeneratePathOfMaze() //logic here
         {
             startCell = gridOfCells[StartCell(), 0]; 
-            finishCell = gridOfCells[FinishCell(), 0];
+            finishCell = gridOfCells[FinishCell(), Rows-1];
             MakeSteps(startCell, finishCell);
         }
 
-        private int[] PossibleWays(Cell cell) 
+        private bool IsPossibleToStepHere(Cell cell) 
         {
-            currentCell = cell;
-            int[] ways = new int[4];
-            int xCUp = currentCell.X / 50 - 1;
-            if (xCUp < 0) { xCUp = 0; }
-            int xCDown = currentCell.X / 50;
-            int yRLeft = currentCell.Y / 50;
-            int yRRight = currentCell.Y / 50;
-                      
-                Cell cellUp = gridOfCells[currentCell.X / 50, xCUp];
-                Cell cellDown = gridOfCells[currentCell.X / 50, (currentCell.Y / 50) + 1];
-                Cell cellLeft = gridOfCells[(currentCell.X / 50) - 1, currentCell.Y / 50];
-                Cell cellRight = gridOfCells[(currentCell.X / 50) + 1, currentCell.Y / 50];
-           
-            if (cellUp.Id == 0)
-                ways[0] = 1;
-            if (cellDown.Id == 0)
-                ways[1] = 1;
-            if (cellLeft.Id == 0)
-                ways[2] = 1;
-            if (cellRight.Id == 0)
-                ways[3] = 1;            
-
-            return ways;
+            currentCell = cell;            
+            if (currentCell.Id == 0)
+            {
+                return true;
+            }
+            return false;             
         }
 
         private void MakeSteps(Cell startCell, Cell finishCell)
         {
-            Random ra = new Random();
-            int rand = 0;//ra.Next(4);
-            
-            int xC = startCell.X / 50;
-            int yR = startCell.Y / 50;
+            Random rand = new Random();
+            Random rand2 = new Random();
+            int ra = rand.Next(4);  
+            int rb = rand.Next(4);
+            int rr = rand.Next(4);
+            int re = rand2.Next(10);
+            int rs = rand2.Next(10);
+            int rq = rand2.Next(4);
+            int sq = rand2.Next(4);
             currentCell = startCell;
+            currentCellRevers = finishCell;            
             
-            int[] way = PossibleWays(currentCell);
-           
-            for(int i = 0; i < way.Length; i++)
-            {
-                if (rand == 0 && yR < 11 && way[1] == 1)//down
+                for (int b = 0; b < 100; b++)
                 {
-                    gridOfCells[xC, yR].CanMoveDown();
-                    gridOfCells[xC, yR + 1].SetFlagCell();                   
+                    currentCell = SetFlags(ra, currentCell);
+                    ra = rand.Next(4);
                 }
+            for (int b = 0; b < 50; b++)
+            {
+                currentCellRevers = SetFlags(rb, currentCellRevers);
+                rb = rand.Next(4);
+            }
+
+            for (int b = 0; b < 15; b++)
+            {
+                SetFlags(rq, gridOfCells[re, rs]);
+                rq = rand.Next(4);
             }
             
-                //if (rand == 1 && yR > 1 )//up
-                //{
-                //    gridOfCells[xC, yR - 1].CanMoveDown();
-                //    gridOfCells[xC, yR - 1].SetFlagCell();
-
-                //}
-                //if (rand == 2 && xC > 1 && IsNearEmpty(gridOfCells[xC - 1, yR]))//left
-                //{
-                //    gridOfCells[xC - 1, yR].CanMoveRight();
-                //    gridOfCells[xC, yR].SetFlagCell();
-
-                //}
-                //if (rand == 3 && xC < 9 && IsNearEmpty(gridOfCells[xC + 1, yR]))//right
-                //{
-                //    gridOfCells[xC, yR].CanMoveRight();
-                //    gridOfCells[xC, yR].SetFlagCell();
-                //}
-                                
         }
 
+        private void RandomBranch()
+        {
+
+        }
+
+        private Cell SetFlags(int random, Cell currentCell)
+        {
+            switch (random)
+            {
+                case 0:
+                    if (CanUp(currentCell))
+                    {
+                        gridOfCells[currentCell.X, currentCell.Y - 1].SetFlagCell();
+                        gridOfCells[currentCell.X, currentCell.Y - 1].CanMoveDown();
+                        return currentCell = gridOfCells[currentCell.X, currentCell.Y - 1];
+                    }
+                    break;
+                case 1:
+                    if (CanDown(currentCell))
+                    {
+                        gridOfCells[currentCell.X, currentCell.Y + 1].SetFlagCell();
+                        gridOfCells[currentCell.X, currentCell.Y].CanMoveDown();
+                        return currentCell = gridOfCells[currentCell.X, currentCell.Y + 1];
+                    }
+                    break;
+                case 2:
+                    if (CanLeft(currentCell))
+                    {
+                        gridOfCells[currentCell.X - 1, currentCell.Y].SetFlagCell();
+                        gridOfCells[currentCell.X - 1, currentCell.Y].CanMoveRight();
+                        return currentCell = gridOfCells[currentCell.X - 1, currentCell.Y];
+                    }
+                    break;
+                case 3:
+                    if (CanRight(currentCell))
+                    {
+                        gridOfCells[currentCell.X + 1, currentCell.Y].SetFlagCell();
+                        gridOfCells[currentCell.X, currentCell.Y].CanMoveRight();
+                       return currentCell = gridOfCells[currentCell.X + 1, currentCell.Y];
+                    }
+                    break;                                 
+            }
+            return currentCell;
+        }
 
         private int StartCell()
         {
@@ -125,6 +149,34 @@ namespace Maze_1._0
             int c = random.Next(Columns);
             gridOfCells[c, Rows-1].SetFinishCell();
             return c;
+        }
+
+        private bool CanUp(Cell current)
+        {
+           if (current.Y > 1 && gridOfCells[current.X, current.Y - 1].Id == 0)
+                return true;
+           return false;
+        }
+
+        private bool CanDown(Cell current)
+        {
+            if (current.Y < Rows - 1 && gridOfCells[current.X, current.Y + 1].Id == 0)
+                return true;
+            return false;
+        }
+
+        private bool CanRight(Cell current)
+        {
+            if (current.X < Columns - 1 && gridOfCells[current.X + 1, current.Y].Id == 0)
+                return true;
+            return false;
+        }
+
+        private bool CanLeft(Cell current)
+        {
+            if (current.X > 1 && gridOfCells[current.X - 1, current.Y].Id == 0)
+                return true;
+            return false;
         }
 
         public Cell[,] GetCellsShot()
