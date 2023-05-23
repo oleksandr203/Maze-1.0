@@ -40,7 +40,7 @@ namespace Maze_1._0
             if (!IsFinishCell)
             {
                 IsFinishCell = true;
-                Id = 2;
+                Id = 0;
             }
         }
 

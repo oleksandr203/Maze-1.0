@@ -11,15 +11,11 @@ namespace Maze_1._0
     {
         Cell[,] gridOfCells;
         Cell currentCell;
-        Cell currentCellRevers;
-        Cell upperOfCurrent;
-        Cell lowerOfCurrent;
-        Cell rightOfCurrent;
-        Cell leftOfCurrent;
-        Cell nextCell;
+        bool successMarkNewCell = false;        
         Cell startCell;
         Cell finishCell;
         Random random = new Random();
+        int cellAll;
         public int Columns { get; private set; }
         public int Rows { get; private set; }
 
@@ -44,142 +40,205 @@ namespace Maze_1._0
 
         private void GeneratePathOfMaze() //logic here
         {
+            bool fullField;
+
             startCell = gridOfCells[StartCell(), 0]; 
             finishCell = gridOfCells[FinishCell(), Rows-1];
-            MakeSteps(startCell, finishCell);
-            RandomBranch();
-            RandomBranch();
-            RandomBranch();
+            MakeSteps(startCell);                                
         }
 
-        private bool IsPossibleToStepHere(Cell cell) //plan to merge branches 
+        private bool IsFreeCell()
         {
-            currentCell = cell;            
-            if (currentCell.Id == 0)
+            foreach (var cell in gridOfCells)        
+            if (cell.Id == 0)
             {
                 return true;
             }
             return false;             
         }
 
-        private void MakeSteps(Cell startCell, Cell finishCell)
-        {
-            Random rand = new Random();  
-            
-            currentCell = startCell;
-            currentCellRevers = finishCell;            
-            
-            for (int b = 0; b < 100; b++)
+        private void MakeSteps(Cell startCell)
+        {            
+            cellAll = (Rows - 1) * (Columns - 1);
+
+            currentCell = startCell;            
+            GenarateSteps(ref cellAll, currentCell);
+                      
+            for (;cellAll > 0;)
             {
-                int ra = rand.Next(4);
-                currentCell = SetFlags(ra, currentCell);
-                
-            }
-            for (int b = 0; b < 50; b++)
-            {
-                int rr = rand.Next(4);
-                currentCellRevers = SetFlags(rr, currentCellRevers);                
-            }                    
+                Cell[] cellsForBranch = CellForBranching(); 
+                GenarateSteps(ref cellAll, cellsForBranch[random.Next(cellsForBranch.Length)]);
+            }           
         }
 
-        private void RandomBranch()
+        private Cell[] CellForBranching()
         {
-            Random r = new Random();
-            int  randomWay = r.Next(4);
-            int randomX;
-            int randomY;
-            do
-            {
-                randomX = r.Next(Rows - 2);
-                randomY = r.Next(Columns - 2);
-            }
-            while (gridOfCells[randomX, randomY].Id != 3);
-            
-            for (int b = 0; b < 15; b++)
-            {
-                randomWay = r.Next(4);
-                SetFlags(randomWay, gridOfCells[randomX, randomY]);               
-            }
+            List<Cell> capacity = new List<Cell>();
+            foreach (var cell in gridOfCells)
+                if (cell.Id == 3)
+                {
+                   capacity.Add(cell);   
+                }           
+            return capacity.ToArray();
         }
+
+        private void GenarateSteps(ref int cellReamins, Cell currentCell)
+        {
+            Random rand = new Random();
+            int variatyOfMaxWays = 3;
+
+            for (int b = cellReamins; ;)
+            {
+                int ra = rand.Next(4);               
+
+                currentCell = SetFlags(ra, currentCell);
+                if(successMarkNewCell)
+                {
+                    cellReamins--;
+                    successMarkNewCell = false;
+                }                
+               
+                if (!successMarkNewCell && variatyOfMaxWays > 0)
+                {
+                    variatyOfMaxWays--;
+                    currentCell = SetFlags(rand.Next(4), currentCell);
+
+                    if (successMarkNewCell)
+                    {
+                        cellReamins--;
+                        successMarkNewCell = false;
+                        variatyOfMaxWays = 3;
+                    }                    
+                }
+                if (cellReamins <= 0 | variatyOfMaxWays <= 0)
+                    break;
+            }
+        }       
 
         private Cell SetFlags(int random, Cell currentCell)
-        {
+        {            
+           
             switch (random)
             {
                 case 0:
-                    if (CanUp(currentCell))
+                    if (CanUp(currentCell) && gridOfCells[currentCell.X, currentCell.Y - 1].Id == 0)
                     {
                         gridOfCells[currentCell.X, currentCell.Y - 1].SetFlagCell();
                         gridOfCells[currentCell.X, currentCell.Y - 1].CanMoveDown();
-                        return currentCell = gridOfCells[currentCell.X, currentCell.Y - 1];
+                        successMarkNewCell = true;
+                        return gridOfCells[currentCell.X, currentCell.Y - 1];
                     }
                     break;
                 case 1:
-                    if (CanDown(currentCell))
+                    if (CanDown(currentCell) && gridOfCells[currentCell.X, currentCell.Y + 1].Id == 0)
                     {
                         gridOfCells[currentCell.X, currentCell.Y + 1].SetFlagCell();
                         gridOfCells[currentCell.X, currentCell.Y].CanMoveDown();
-                        return currentCell = gridOfCells[currentCell.X, currentCell.Y + 1];
+                        successMarkNewCell = true;
+                        return gridOfCells[currentCell.X, currentCell.Y + 1];
                     }
                     break;
                 case 2:
-                    if (CanLeft(currentCell))
+                    if (CanLeft(currentCell) && gridOfCells[currentCell.X - 1, currentCell.Y].Id == 0)
                     {
                         gridOfCells[currentCell.X - 1, currentCell.Y].SetFlagCell();
                         gridOfCells[currentCell.X - 1, currentCell.Y].CanMoveRight();
-                        return currentCell = gridOfCells[currentCell.X - 1, currentCell.Y];
+                        successMarkNewCell = true;
+                        return gridOfCells[currentCell.X - 1, currentCell.Y];
                     }
                     break;
                 case 3:
-                    if (CanRight(currentCell))
+                    if (CanRight(currentCell) && gridOfCells[currentCell.X + 1, currentCell.Y].Id == 0)
                     {
                         gridOfCells[currentCell.X + 1, currentCell.Y].SetFlagCell();
                         gridOfCells[currentCell.X, currentCell.Y].CanMoveRight();
-                       return currentCell = gridOfCells[currentCell.X + 1, currentCell.Y];
+                        successMarkNewCell = true;
+                        return gridOfCells[currentCell.X + 1, currentCell.Y];
                     }
                     break;                                 
             }
             return currentCell;
+
+            //switch (random)
+            //{
+            //    case 0:
+            //        if (CanUp(currentCell) && gridOfCells[currentCell.X, currentCell.Y - 1].Id == 0)
+            //        {
+            //            gridOfCells[currentCell.X, currentCell.Y - 1].SetFlagCell();
+            //            gridOfCells[currentCell.X, currentCell.Y - 1].CanMoveDown();
+            //            successMarkNewCell = true;
+            //            return currentCell = gridOfCells[currentCell.X, currentCell.Y - 1];
+            //        }
+            //        break;
+            //    case 1:
+            //        if (CanDown(currentCell) && gridOfCells[currentCell.X, currentCell.Y + 1].Id == 0)
+            //        {
+            //            gridOfCells[currentCell.X, currentCell.Y + 1].SetFlagCell();
+            //            gridOfCells[currentCell.X, currentCell.Y].CanMoveDown();
+            //            successMarkNewCell = true;
+            //            return currentCell = gridOfCells[currentCell.X, currentCell.Y + 1];
+            //        }
+            //        break;
+            //    case 2:
+            //        if (CanLeft(currentCell) && gridOfCells[currentCell.X - 1, currentCell.Y].Id == 0)
+            //        {
+            //            gridOfCells[currentCell.X - 1, currentCell.Y].SetFlagCell();
+            //            gridOfCells[currentCell.X - 1, currentCell.Y].CanMoveRight();
+            //            successMarkNewCell = true;
+            //            return currentCell = gridOfCells[currentCell.X - 1, currentCell.Y];
+            //        }
+            //        break;
+            //    case 3:
+            //        if (CanRight(currentCell) && gridOfCells[currentCell.X + 1, currentCell.Y].Id == 0)
+            //        {
+            //            gridOfCells[currentCell.X + 1, currentCell.Y].SetFlagCell();
+            //            gridOfCells[currentCell.X, currentCell.Y].CanMoveRight();
+            //            successMarkNewCell = true;
+            //            return currentCell = gridOfCells[currentCell.X + 1, currentCell.Y];
+            //        }
+            //        break;
+            //}
+            //return currentCell;
         }
 
         private int StartCell()
         {
-            int c = random.Next(Columns);
+            int c = random.Next(0, Columns);
             gridOfCells[c, 0].SetStartCell();
             return c;
         }
         
         private int FinishCell()
         {
-            int c = random.Next(Columns);
+            int c = random.Next(0, Columns);
             gridOfCells[c, Rows-1].SetFinishCell();
             return c;
         }
 
         private bool CanUp(Cell current)
         {
-           if (current.Y > 1 && gridOfCells[current.X, current.Y - 1].Id == 0)
+           if (current.Y > 1 && gridOfCells[current.X, current.Y ].Id == 0)
                 return true;
            return false;
         }
 
         private bool CanDown(Cell current)
         {
-            if (current.Y < Rows - 1 && gridOfCells[current.X, current.Y + 1].Id == 0)
+            if (current.Y < Rows  && gridOfCells[current.X, current.Y + 1].Id == 0)
                 return true;
             return false;
         }
 
         private bool CanRight(Cell current)
         {
-            if (current.X < Columns - 1 && gridOfCells[current.X + 1, current.Y].Id == 0)
+            if (current.X < Columns  && gridOfCells[current.X + 1, current.Y].Id == 0)
                 return true;
             return false;
         }
 
         private bool CanLeft(Cell current)
         {
-            if (current.X > 1 && gridOfCells[current.X - 1, current.Y].Id == 0)
+            if (current.X > 1 && gridOfCells[current.X, current.Y].Id == 0)
                 return true;
             return false;
         }
