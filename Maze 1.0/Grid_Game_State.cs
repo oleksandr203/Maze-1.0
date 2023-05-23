@@ -47,9 +47,12 @@ namespace Maze_1._0
             startCell = gridOfCells[StartCell(), 0]; 
             finishCell = gridOfCells[FinishCell(), Rows-1];
             MakeSteps(startCell, finishCell);
+            RandomBranch();
+            RandomBranch();
+            RandomBranch();
         }
 
-        private bool IsPossibleToStepHere(Cell cell) 
+        private bool IsPossibleToStepHere(Cell cell) //plan to merge branches 
         {
             currentCell = cell;            
             if (currentCell.Id == 0)
@@ -61,40 +64,42 @@ namespace Maze_1._0
 
         private void MakeSteps(Cell startCell, Cell finishCell)
         {
-            Random rand = new Random();
-            Random rand2 = new Random();
-            int ra = rand.Next(4);  
-            int rb = rand.Next(4);
-            int rr = rand.Next(4);
-            int re = rand2.Next(10);
-            int rs = rand2.Next(10);
-            int rq = rand2.Next(4);
-            int sq = rand2.Next(4);
+            Random rand = new Random();  
+            
             currentCell = startCell;
             currentCellRevers = finishCell;            
             
-                for (int b = 0; b < 100; b++)
-                {
-                    currentCell = SetFlags(ra, currentCell);
-                    ra = rand.Next(4);
-                }
+            for (int b = 0; b < 100; b++)
+            {
+                int ra = rand.Next(4);
+                currentCell = SetFlags(ra, currentCell);
+                
+            }
             for (int b = 0; b < 50; b++)
             {
-                currentCellRevers = SetFlags(rb, currentCellRevers);
-                rb = rand.Next(4);
-            }
-
-            for (int b = 0; b < 15; b++)
-            {
-                SetFlags(rq, gridOfCells[re, rs]);
-                rq = rand.Next(4);
-            }
-            
+                int rr = rand.Next(4);
+                currentCellRevers = SetFlags(rr, currentCellRevers);                
+            }                    
         }
 
         private void RandomBranch()
         {
-
+            Random r = new Random();
+            int  randomWay = r.Next(4);
+            int randomX;
+            int randomY;
+            do
+            {
+                randomX = r.Next(Rows - 2);
+                randomY = r.Next(Columns - 2);
+            }
+            while (gridOfCells[randomX, randomY].Id != 3);
+            
+            for (int b = 0; b < 15; b++)
+            {
+                randomWay = r.Next(4);
+                SetFlags(randomWay, gridOfCells[randomX, randomY]);               
+            }
         }
 
         private Cell SetFlags(int random, Cell currentCell)
