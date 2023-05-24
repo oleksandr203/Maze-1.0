@@ -23,18 +23,21 @@ namespace Maze_1._0
     public partial class MainWindow : Window
     {
         double sizeOfCell = 10;
+        GridGameState field;
+        StepOnCell[,] steps;
+        Pen _pen = new Pen(Brushes.Brown, 1);
 
         public MainWindow()
         {
             InitializeComponent();            
         }
        
-        private async Task DrawCanv( int rows, int columns)
-        {   
-            Pen _pen = new Pen(Brushes.Brown, 1); //to move to xaml form?
-            GridGameState field = new GridGameState(columns, rows);
+        private async Task DrawCanv(int rows, int columns)
+        {               
+            field = new GridGameState(columns, rows);
             Cell[,] cells = field.GetCellsShot();
-
+            StepOnCell[,] steps = new StepOnCell[columns, rows];
+            steps = field.GetStepsPoints();
             DrawingVisual drawingVisual = new DrawingVisual();
             using (DrawingContext drawingContext = drawingVisual.RenderOpen())
             {
@@ -64,14 +67,21 @@ namespace Maze_1._0
                                 new Rect(PointScaleConvertUpLeft(cells[c, r].GetPosition()), PointScaleConvertDownRight(cells[c, r].GetPosition())),
                                 sizeOfCell / 8, sizeOfCell / 8);
                         }
+                        if (steps[c, r].Id == 1)
+                        {
+                            drawingContext.DrawEllipse(Brushes.Red, _pen, PointScaleConvertCenterCell(steps[c, r].GetPosition()), sizeOfCell / 5, sizeOfCell / 5);
+                        }
                     }                   
                 }
             }
             RenderTargetBitmap bmp = new RenderTargetBitmap((int)gameFieldCanvas.Width + 25, (int)gameFieldCanvas.Height + 25, 100, 100, PixelFormats.Pbgra32);
-            bmp.Render(drawingVisual);            
+            bmp.Render(drawingVisual);
+            ReDraw(bmp);
+        }
+        public void ReDraw(RenderTargetBitmap bmp)
+        {            
             canvasImage.Source = bmp;
         }
-
         public Point PointScaleConvertUpLeft(Point p)
         {
             Point point = new Point(p.X, p.Y);           
@@ -143,23 +153,25 @@ namespace Maze_1._0
                     break;
 
                 case Key.Left:
-                   
+                    field.StepLeft();
                     break;
 
                 case Key.Right:
-                    
+                    field.StepRight();
                     break; 
                     
                 case Key.Down:
-                   
+                   field.StepDown();
                     break;
 
                 case Key.Up:
-                    
+                    field.StepUp();
                     break;
 
                 default: break;
             }
+            field.MarkLocalPlayerPositon();
+            DrawCanv((int)(gameFieldCanvas.Height / sizeOfCell), (int)(gameFieldCanvas.Width / sizeOfCell));
         }
 
         private void StartGame_Click(object sender, RoutedEventArgs e)

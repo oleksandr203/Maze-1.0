@@ -11,6 +11,7 @@ namespace Maze_1._0
     {
         Cell[,] gridOfCells;
         StepOnCell[,] stepOnCells;
+        StepOnCell currentPlayerPosition;
         Cell currentCell;
         bool successMarkNewCell = false;        
         Cell startCell;
@@ -24,7 +25,8 @@ namespace Maze_1._0
         {
             Columns = columns;
             Rows = rows;
-            gridOfCells = new Cell[Columns, Rows];            
+            gridOfCells = new Cell[Columns, Rows];     
+            
             for (int r = 0; r < rows; r++)
             {
                 for (int c = 0; c < columns; c++)
@@ -34,48 +36,70 @@ namespace Maze_1._0
                     gridOfCells[c, r].CanNotMoveDown();
                     gridOfCells[c, r].CanNotMoveRight();
                 }
-            }            
-            GeneratePathOfMaze();
-            SolveMaze(currentCell);
+            }
+            stepOnCells = new StepOnCell[Columns, Rows];
+
+            for (int c = 0; c < Columns; c++)
+            {
+                for (int r = 0; r < Rows; r++)
+                {
+                    stepOnCells[c, r] = new StepOnCell(c, r);
+                }
+            }
+
+            GenerateBranchesOnField();
+            MarkLocalPlayerPositon();
         }
 
-        private void GeneratePathOfMaze() 
+        private void GenerateBranchesOnField() 
         {            
             startCell = gridOfCells[StartCell(), 0]; 
             finishCell = gridOfCells[FinishCell(), Rows-1];
-            MakeSteps(startCell);            
+            MakeBranchingWay(startCell);            
         }
 
-        private void MakeSteps(Cell startCell)
+        private void MakeBranchingWay(Cell startCell)
         { 
             currentCell = startCell;            
-            GenarateSteps( currentCell);
+            GenarateBranch( currentCell);
 
             for (; IsFreeCell();)
             {
                 Cell[] cellsForBranch = CellForBranching();
-                try { GenarateSteps(cellsForBranch[random.Next(cellsForBranch.Length)]); }
+                try { GenarateBranch(cellsForBranch[random.Next(cellsForBranch.Length)]); }
 
                 catch 
                 {
                     foreach (var g in gridOfCells)
                         g.SetEmptyCell();
-                        GeneratePathOfMaze(); 
+                        GenerateBranchesOnField(); 
                 }
             }
         }
 
-        private void SolveMaze(Cell cell)
+        public void MarkLocalPlayerPositon()
         {
-            stepOnCells = new StepOnCell[Columns, Rows];
-            for (int c = 0; c < Columns; c++)
-            {
-                for(int r = 0; r < Rows; r++)
-                {
-                    stepOnCells[c, r] = new StepOnCell(c, r);
-                }
-            }
-            stepOnCells[cell.X, cell.Y].MarkAsStepped();
+            currentPlayerPosition.MarkAsStepped();
+        }
+
+        public void StepUp()
+        {
+            currentPlayerPosition = stepOnCells[currentPlayerPosition.X, currentPlayerPosition.Y - 1];
+        }
+
+        public void StepDown()
+        {
+            currentPlayerPosition = stepOnCells[currentPlayerPosition.X, currentPlayerPosition.Y + 1];
+        }
+
+        public void StepLeft()
+        {
+            currentPlayerPosition = stepOnCells[currentPlayerPosition.X - 1, currentPlayerPosition.Y];
+        }
+
+        public void StepRight()
+        {
+            currentPlayerPosition = stepOnCells[currentPlayerPosition.X + 1, currentPlayerPosition.Y];
         }
 
         private bool IsFreeCell()
@@ -99,7 +123,7 @@ namespace Maze_1._0
             return cellCanBranch.ToArray();
         }
 
-        private void GenarateSteps( Cell currentCell)
+        private void GenarateBranch( Cell currentCell)
         {
             Random rand = new Random();
             int variatyOfMaxWays = 3;
@@ -176,6 +200,7 @@ namespace Maze_1._0
         {
             int c = random.Next(0, Columns);
             gridOfCells[c, 0].SetStartCell();
+            currentPlayerPosition = stepOnCells[c, 0];            
             return c;
         }
         
@@ -217,6 +242,10 @@ namespace Maze_1._0
         public Cell[,] GetCellsShot()
         {
             return gridOfCells;
+        }
+        public StepOnCell[,] GetStepsPoints()
+        {
+            return stepOnCells;
         }
     }
 }

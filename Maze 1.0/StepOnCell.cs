@@ -9,15 +9,19 @@ namespace Maze_1._0
 {
     public class StepOnCell
     {
-        Point step = new Point();
+        Point step;
+        public int X { get; private set; }
+        public int Y { get; private set; }
 
         public int Id { get; private set; } = 0;
         
         public StepOnCell(int r, int c) 
         {
-           step = new Point(r, c);
+            X = r;
+            Y = c;
+            step = new Point(X, Y);
         }
-
+        
         public void MarkAsStepped()
         {
             if (Id == 0)
@@ -29,6 +33,11 @@ namespace Maze_1._0
         public void ClearStep()
         {
             Id = 0;
+        }
+
+        public Point GetPosition()
+        {
+            return new Point(X, Y);
         }
     }
 }
