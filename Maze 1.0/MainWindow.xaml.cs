@@ -25,6 +25,7 @@ namespace Maze_1._0
         int rows = 12;
         int columns = 10;
         int sizeOfCell = 50;
+
         public MainWindow()
         {
             InitializeComponent();            

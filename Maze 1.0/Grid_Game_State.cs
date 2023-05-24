@@ -24,7 +24,7 @@ namespace Maze_1._0
             Columns = columns;
             Rows = rows;
             gridOfCells = new Cell[Columns, Rows];
-
+            cellAll = (Rows - 1) * (Columns - 1);
             for (int r = 0; r < rows; r++)
             {
                 for (int c = 0; c < columns; c++)
@@ -38,48 +38,64 @@ namespace Maze_1._0
             GeneratePathOfMaze();            
         }
 
-        private void GeneratePathOfMaze() //logic here
-        {
-            bool fullField;
-
+        private void GeneratePathOfMaze() 
+        {            
             startCell = gridOfCells[StartCell(), 0]; 
             finishCell = gridOfCells[FinishCell(), Rows-1];
             MakeSteps(startCell);                                
         }
 
-        private bool IsFreeCell()
-        {
-            foreach (var cell in gridOfCells)        
-            if (cell.Id == 0)
-            {
-                return true;
-            }
-            return false;             
-        }
-
         private void MakeSteps(Cell startCell)
-        {            
-            cellAll = (Rows - 1) * (Columns - 1);
-
+        { 
             currentCell = startCell;            
             GenarateSteps(ref cellAll, currentCell);
-                      
-            for (;cellAll > 0;)
+
+            for (; IsFreeCell();)
             {
-                Cell[] cellsForBranch = CellForBranching(); 
-                GenarateSteps(ref cellAll, cellsForBranch[random.Next(cellsForBranch.Length)]);
-            }           
+                Cell[] cellsForBranch = CellForBranching();
+                try { GenarateSteps(ref cellAll, cellsForBranch[random.Next(cellsForBranch.Length)]); }
+
+                catch (Exception e)
+                {
+                    foreach (var g in gridOfCells)
+                        g.SetEmptyCell();
+
+                        GeneratePathOfMaze(); 
+                }
+
+            }
+            //if (IsFreeCell(CellForBranching())) //temporary patch
+            //{
+            //    foreach (Cell cell in gridOfCells)
+            //    {
+            //        if (cell.Id == 0)
+            //        {
+            //            GenarateSteps(ref cellAll, cell);
+            //            //SetFlags(random.Next(4), cell);
+            //        }
+            //    }
+            //}
+        }
+
+        private bool IsFreeCell()
+        {
+            foreach (var cell in gridOfCells)
+                if (cell.Id == 0)
+                {
+                    return true;                    
+                }                
+            return false;
         }
 
         private Cell[] CellForBranching()
         {
-            List<Cell> capacity = new List<Cell>();
+            List<Cell> cellCanBranch = new List<Cell>();
             foreach (var cell in gridOfCells)
                 if (cell.Id == 3)
                 {
-                   capacity.Add(cell);   
+                   cellCanBranch.Add(cell);
                 }           
-            return capacity.ToArray();
+            return cellCanBranch.ToArray();
         }
 
         private void GenarateSteps(ref int cellReamins, Cell currentCell)
@@ -87,18 +103,16 @@ namespace Maze_1._0
             Random rand = new Random();
             int variatyOfMaxWays = 3;
 
-            for (int b = cellReamins; ;)
-            {
-                int ra = rand.Next(4);               
-
-                currentCell = SetFlags(ra, currentCell);
+            while(IsFreeCell())
+            {                
+                currentCell = SetFlags(rand.Next(4), currentCell);
                 if(successMarkNewCell)
                 {
                     cellReamins--;
                     successMarkNewCell = false;
                 }                
                
-                if (!successMarkNewCell && variatyOfMaxWays > 0)
+                else if (!successMarkNewCell && variatyOfMaxWays > 0)
                 {
                     variatyOfMaxWays--;
                     currentCell = SetFlags(rand.Next(4), currentCell);
@@ -110,14 +124,13 @@ namespace Maze_1._0
                         variatyOfMaxWays = 3;
                     }                    
                 }
-                if (cellReamins <= 0 | variatyOfMaxWays <= 0)
+                else if (variatyOfMaxWays <= 0)
                     break;
             }
         }       
 
         private Cell SetFlags(int random, Cell currentCell)
-        {            
-           
+        {  
             switch (random)
             {
                 case 0:
@@ -158,47 +171,6 @@ namespace Maze_1._0
                     break;                                 
             }
             return currentCell;
-
-            //switch (random)
-            //{
-            //    case 0:
-            //        if (CanUp(currentCell) && gridOfCells[currentCell.X, currentCell.Y - 1].Id == 0)
-            //        {
-            //            gridOfCells[currentCell.X, currentCell.Y - 1].SetFlagCell();
-            //            gridOfCells[currentCell.X, currentCell.Y - 1].CanMoveDown();
-            //            successMarkNewCell = true;
-            //            return currentCell = gridOfCells[currentCell.X, currentCell.Y - 1];
-            //        }
-            //        break;
-            //    case 1:
-            //        if (CanDown(currentCell) && gridOfCells[currentCell.X, currentCell.Y + 1].Id == 0)
-            //        {
-            //            gridOfCells[currentCell.X, currentCell.Y + 1].SetFlagCell();
-            //            gridOfCells[currentCell.X, currentCell.Y].CanMoveDown();
-            //            successMarkNewCell = true;
-            //            return currentCell = gridOfCells[currentCell.X, currentCell.Y + 1];
-            //        }
-            //        break;
-            //    case 2:
-            //        if (CanLeft(currentCell) && gridOfCells[currentCell.X - 1, currentCell.Y].Id == 0)
-            //        {
-            //            gridOfCells[currentCell.X - 1, currentCell.Y].SetFlagCell();
-            //            gridOfCells[currentCell.X - 1, currentCell.Y].CanMoveRight();
-            //            successMarkNewCell = true;
-            //            return currentCell = gridOfCells[currentCell.X - 1, currentCell.Y];
-            //        }
-            //        break;
-            //    case 3:
-            //        if (CanRight(currentCell) && gridOfCells[currentCell.X + 1, currentCell.Y].Id == 0)
-            //        {
-            //            gridOfCells[currentCell.X + 1, currentCell.Y].SetFlagCell();
-            //            gridOfCells[currentCell.X, currentCell.Y].CanMoveRight();
-            //            successMarkNewCell = true;
-            //            return currentCell = gridOfCells[currentCell.X + 1, currentCell.Y];
-            //        }
-            //        break;
-            //}
-            //return currentCell;
         }
 
         private int StartCell()
@@ -217,28 +189,28 @@ namespace Maze_1._0
 
         private bool CanUp(Cell current)
         {
-           if (current.Y > 1 && gridOfCells[current.X, current.Y ].Id == 0)
+           if (current.Y > 0 && gridOfCells[current.X, current.Y - 1].Id == 0)
                 return true;
            return false;
         }
 
         private bool CanDown(Cell current)
         {
-            if (current.Y < Rows  && gridOfCells[current.X, current.Y + 1].Id == 0)
+            if (current.Y < Rows - 1 && gridOfCells[current.X, current.Y + 1].Id == 0)
                 return true;
             return false;
         }
 
         private bool CanRight(Cell current)
         {
-            if (current.X < Columns  && gridOfCells[current.X + 1, current.Y].Id == 0)
+            if (current.X < Columns - 1 && gridOfCells[current.X + 1, current.Y].Id == 0)
                 return true;
             return false;
         }
 
         private bool CanLeft(Cell current)
         {
-            if (current.X > 1 && gridOfCells[current.X, current.Y].Id == 0)
+            if (current.X > 0 && gridOfCells[current.X - 1, current.Y].Id == 0)
                 return true;
             return false;
         }
