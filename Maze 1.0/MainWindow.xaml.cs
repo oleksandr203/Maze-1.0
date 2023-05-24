@@ -22,17 +22,15 @@ namespace Maze_1._0
     /// </summary>
     public partial class MainWindow : Window
     {
-        int rows = 12;
-        int columns = 10;
-        int sizeOfCell = 50;
+        double sizeOfCell = 10;
 
         public MainWindow()
         {
             InitializeComponent();            
         }
        
-        private void DrawCanv()
-        {           
+        private async Task DrawCanv( int rows, int columns)
+        {   
             Pen _pen = new Pen(Brushes.Brown, 1); //to move to xaml form?
             GridGameState field = new GridGameState(columns, rows);
             Cell[,] cells = field.GetCellsShot();
@@ -56,24 +54,27 @@ namespace Maze_1._0
                         }
                         if (cells[c, r].Id == 1)
                         {
-                            drawingContext.DrawEllipse(Brushes.Aquamarine, _pen, PointScaleConvertCenterCell(cells[c, r].GetPosition()), sizeOfCell/2, 20);
+                            drawingContext.DrawRoundedRectangle(Brushes.Green, _pen,
+                                new Rect(PointScaleConvertUpLeft(cells[c, r].GetPosition()), PointScaleConvertDownRight(cells[c, r].GetPosition())),
+                                sizeOfCell / 8, sizeOfCell / 8);
                         }
                         if (cells[c, r].IsFinishCell)
-                        {
-                            drawingContext.DrawEllipse(Brushes.BlueViolet, _pen, PointScaleConvertCenterCell(cells[c, r].GetPosition()), sizeOfCell / 2, 20);
+                        {                           
+                            drawingContext.DrawRoundedRectangle(Brushes.DarkOrange, _pen,
+                                new Rect(PointScaleConvertUpLeft(cells[c, r].GetPosition()), PointScaleConvertDownRight(cells[c, r].GetPosition())),
+                                sizeOfCell / 8, sizeOfCell / 8);
                         }
-                    }
+                    }                   
                 }
             }
             RenderTargetBitmap bmp = new RenderTargetBitmap((int)gameFieldCanvas.Width + 25, (int)gameFieldCanvas.Height + 25, 100, 100, PixelFormats.Pbgra32);
-
-            bmp.Render(drawingVisual);
+            bmp.Render(drawingVisual);            
             canvasImage.Source = bmp;
         }
 
         public Point PointScaleConvertUpLeft(Point p)
         {
-            Point point = new Point(p.X, p.Y);
+            Point point = new Point(p.X, p.Y);           
             point.X = p.X * sizeOfCell;
             point.Y = p.Y * sizeOfCell;
             return point;
@@ -86,6 +87,7 @@ namespace Maze_1._0
             point.Y = p.Y * sizeOfCell;
             return point;
         }
+
         public Point PointScaleConvertDownLeft(Point p)
         {
             Point point = new Point(p.X, p.Y);
@@ -127,8 +129,8 @@ namespace Maze_1._0
         }
 
         private void drawingCanvas_Loaded(object sender, RoutedEventArgs e)
-        {
-            DrawCanv();
+        {            
+                        
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
@@ -153,8 +155,35 @@ namespace Maze_1._0
 
                 default: break;
             }
-        }       
-        
+        }
+
+        private void StartGame_Click(object sender, RoutedEventArgs e)
+        {
+            StartMenuGrid.Visibility = Visibility.Collapsed;
+        }
+
+        private async void btnStart_Click_1(object sender, RoutedEventArgs e)
+        {
+           await DrawCanv((int)(gameFieldCanvas.Height / sizeOfCell), (int)(gameFieldCanvas.Width / sizeOfCell));
+        }
+
+        private void GoToStartMenu_Click(object sender, RoutedEventArgs e)
+        {
+            StartMenuGrid.Visibility = Visibility.Visible;
+        }
+                
+        private async void cellSizeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {           
+                while ((int)cellSizeSlider.Value % 5 != 0)
+                {
+                    cellSizeSlider.Value -= (int)cellSizeSlider.Value % 5;
+                    cellSizeSlider.IsEnabled = false;                
+                    await Task.Delay(100);
+                }            
+            LabelShowResolution.Content = $"You choose {(int)((Slider)sender).Value} Colunms";
+            sizeOfCell = (gameFieldCanvas.Width / ((Slider)sender).Value);
+            cellSizeSlider.IsEnabled = true;
+        }
     }    
 }
 

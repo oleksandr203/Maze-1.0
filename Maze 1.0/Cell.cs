@@ -51,6 +51,7 @@ namespace Maze_1._0
                 Id = 3;
             }
         }
+
         public void SetEmptyCell()
         {
              Id = 0;
@@ -71,6 +72,7 @@ namespace Maze_1._0
                 HorizontalWall = false;
             }           
         }
+
         public void CanNotMoveRight()
         {
             if (VetricalWall)

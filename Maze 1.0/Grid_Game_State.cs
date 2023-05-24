@@ -15,7 +15,7 @@ namespace Maze_1._0
         Cell startCell;
         Cell finishCell;
         Random random = new Random();
-        int cellAll;
+       
         public int Columns { get; private set; }
         public int Rows { get; private set; }
 
@@ -23,8 +23,7 @@ namespace Maze_1._0
         {
             Columns = columns;
             Rows = rows;
-            gridOfCells = new Cell[Columns, Rows];
-            cellAll = (Rows - 1) * (Columns - 1);
+            gridOfCells = new Cell[Columns, Rows];            
             for (int r = 0; r < rows; r++)
             {
                 for (int c = 0; c < columns; c++)
@@ -48,33 +47,21 @@ namespace Maze_1._0
         private void MakeSteps(Cell startCell)
         { 
             currentCell = startCell;            
-            GenarateSteps(ref cellAll, currentCell);
+            GenarateSteps( currentCell);
 
             for (; IsFreeCell();)
             {
                 Cell[] cellsForBranch = CellForBranching();
-                try { GenarateSteps(ref cellAll, cellsForBranch[random.Next(cellsForBranch.Length)]); }
+                try { GenarateSteps(cellsForBranch[random.Next(cellsForBranch.Length)]); }
 
-                catch (Exception e)
+                catch 
                 {
                     foreach (var g in gridOfCells)
                         g.SetEmptyCell();
 
                         GeneratePathOfMaze(); 
                 }
-
             }
-            //if (IsFreeCell(CellForBranching())) //temporary patch
-            //{
-            //    foreach (Cell cell in gridOfCells)
-            //    {
-            //        if (cell.Id == 0)
-            //        {
-            //            GenarateSteps(ref cellAll, cell);
-            //            //SetFlags(random.Next(4), cell);
-            //        }
-            //    }
-            //}
         }
 
         private bool IsFreeCell()
@@ -98,7 +85,7 @@ namespace Maze_1._0
             return cellCanBranch.ToArray();
         }
 
-        private void GenarateSteps(ref int cellReamins, Cell currentCell)
+        private void GenarateSteps( Cell currentCell)
         {
             Random rand = new Random();
             int variatyOfMaxWays = 3;
@@ -108,7 +95,6 @@ namespace Maze_1._0
                 currentCell = SetFlags(rand.Next(4), currentCell);
                 if(successMarkNewCell)
                 {
-                    cellReamins--;
                     successMarkNewCell = false;
                 }                
                
@@ -119,7 +105,6 @@ namespace Maze_1._0
 
                     if (successMarkNewCell)
                     {
-                        cellReamins--;
                         successMarkNewCell = false;
                         variatyOfMaxWays = 3;
                     }                    
