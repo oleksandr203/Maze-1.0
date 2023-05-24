@@ -103,6 +103,7 @@ namespace Maze_1._0
             point.Y = p.Y * sizeOfCell + sizeOfCell;
             return point;
         }
+
         public Point PointScaleConvertCenterCell(Point p)
         {
             Point point = new Point(p.X, p.Y);
@@ -151,6 +152,10 @@ namespace Maze_1._0
                     
                 case Key.Down:
                    
+                    break;
+
+                case Key.Up:
+                    
                     break;
 
                 default: break;

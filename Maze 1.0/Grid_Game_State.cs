@@ -10,6 +10,7 @@ namespace Maze_1._0
     public class GridGameState
     {
         Cell[,] gridOfCells;
+        StepOnCell[,] stepOnCells;
         Cell currentCell;
         bool successMarkNewCell = false;        
         Cell startCell;
@@ -34,14 +35,15 @@ namespace Maze_1._0
                     gridOfCells[c, r].CanNotMoveRight();
                 }
             }            
-            GeneratePathOfMaze();            
+            GeneratePathOfMaze();
+            SolveMaze(currentCell);
         }
 
         private void GeneratePathOfMaze() 
         {            
             startCell = gridOfCells[StartCell(), 0]; 
             finishCell = gridOfCells[FinishCell(), Rows-1];
-            MakeSteps(startCell);                                
+            MakeSteps(startCell);            
         }
 
         private void MakeSteps(Cell startCell)
@@ -58,10 +60,22 @@ namespace Maze_1._0
                 {
                     foreach (var g in gridOfCells)
                         g.SetEmptyCell();
-
                         GeneratePathOfMaze(); 
                 }
             }
+        }
+
+        private void SolveMaze(Cell cell)
+        {
+            stepOnCells = new StepOnCell[Columns, Rows];
+            for (int c = 0; c < Columns; c++)
+            {
+                for(int r = 0; r < Rows; r++)
+                {
+                    stepOnCells[c, r] = new StepOnCell(c, r);
+                }
+            }
+            stepOnCells[cell.X, cell.Y].MarkAsStepped();
         }
 
         private bool IsFreeCell()
