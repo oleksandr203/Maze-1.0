@@ -20,6 +20,7 @@ namespace Maze_1._0
        
         public int Columns { get; private set; }
         public int Rows { get; private set; }
+        public bool IsFinished { get; private set; } = false;
 
         public GridGameState(int columns, int rows)
         {
@@ -79,27 +80,41 @@ namespace Maze_1._0
 
         public void MarkLocalPlayerPositon()
         {
-            currentPlayerPosition.MarkAsStepped();
+            if (currentPlayerPosition.GetPosition() != finishCell.GetPosition())
+            {
+                currentPlayerPosition.MarkAsStepped();
+            }
+            else Finish();
+            
         }
 
         public void StepUp()
         {
+            if (currentPlayerPosition.Y >= 1 && !gridOfCells[currentPlayerPosition.X, currentPlayerPosition.Y - 1].HorizontalWall)
             currentPlayerPosition = stepOnCells[currentPlayerPosition.X, currentPlayerPosition.Y - 1];
         }
 
         public void StepDown()
         {
-            currentPlayerPosition = stepOnCells[currentPlayerPosition.X, currentPlayerPosition.Y + 1];
+            if (!gridOfCells[currentPlayerPosition.X, currentPlayerPosition.Y].HorizontalWall && currentPlayerPosition.Y < Rows)
+                currentPlayerPosition = stepOnCells[currentPlayerPosition.X, currentPlayerPosition.Y + 1];
         }
 
         public void StepLeft()
         {
-            currentPlayerPosition = stepOnCells[currentPlayerPosition.X - 1, currentPlayerPosition.Y];
+            if (currentPlayerPosition.X >= 1 && !gridOfCells[currentPlayerPosition.X - 1, currentPlayerPosition.Y].VetricalWall)
+                currentPlayerPosition = stepOnCells[currentPlayerPosition.X - 1, currentPlayerPosition.Y];
         }
 
         public void StepRight()
         {
-            currentPlayerPosition = stepOnCells[currentPlayerPosition.X + 1, currentPlayerPosition.Y];
+            if (!gridOfCells[currentPlayerPosition.X, currentPlayerPosition.Y].VetricalWall && currentPlayerPosition.X < Rows)
+                currentPlayerPosition = stepOnCells[currentPlayerPosition.X + 1, currentPlayerPosition.Y];
+        }
+
+        public void Finish()
+        {
+            IsFinished = true;
         }
 
         private bool IsFreeCell()
@@ -243,6 +258,7 @@ namespace Maze_1._0
         {
             return gridOfCells;
         }
+
         public StepOnCell[,] GetStepsPoints()
         {
             return stepOnCells;

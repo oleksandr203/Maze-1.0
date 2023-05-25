@@ -59,9 +59,16 @@
                         VerticalAlignment="Center"
                         Loaded="drawingCanvas_Loaded"
                         ClipToBounds="False">
-                    <Image Name="canvasImage"/>                    
+                    <Image Name="canvasImage"/>
+                    <Canvas x:Name="gameFieldCanvasSecondLayout"
+                        VerticalAlignment="Center"                        
+                        ClipToBounds="False">
+                        <Image Name="canvasImageSecond"/>
+                    </Canvas>
                 </Canvas>
+                
             </Border>
+           
         </Viewbox>
         <StatusBar  x:Name="stBar" 
                     Grid.Row="1"
@@ -70,8 +77,9 @@
                     VerticalAlignment="Bottom">
             <Label Content="Ready"/>
         </StatusBar>
-        <Grid x:Name="StartMenuGrid" 
-              Opacity="80"
+        <Grid x:Name="StartMenuGrid"              
+              Margin="160, 50, 160, 100"
+              Opacity="60"
               Visibility="Visible"
               Grid.RowSpan="2"
               Grid.ColumnSpan="3">
@@ -83,12 +91,12 @@
                 </LinearGradientBrush>
             </Grid.Background>
             <StackPanel Orientation="Vertical"
-                        Margin="200"
+                        Margin="50"
                         VerticalAlignment="Center">
                 <Button x:Name="StartGame" 
                         Content="START"
-                        Margin="80"
-                        Height="80"
+                        Margin="10"
+                        Height="40"
                         FontSize="32"
                         Click="StartGame_Click"/>
                 <Label x:Name="LabelShowResolution"
@@ -124,20 +132,15 @@
             <StackPanel Orientation="Vertical"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center">
-                <TextBlock Text="GAME OVER"
+                <TextBlock Text="YOU WIN!"
                            FontSize="48"
-                           TextAlignment="Center"/>
-                <TextBlock x:Name="finalTextScore"
-                           Text="Final score: "
-                           Foreground="DarkRed"
-                           FontSize="30"
-                           TextAlignment="Center"/>
+                           TextAlignment="Center"/>               
                 <Button x:Name="acceptAgain"
-                        Content="Try Again"
+                        Content="OK"
                         Margin="20" 
                         Padding="5" 
                         Background="AliceBlue"
-                        Click="btnStart_Click"/>
+                        Click="acceptAgain_Click"/>
             </StackPanel>            
         </Grid>
     </Grid>

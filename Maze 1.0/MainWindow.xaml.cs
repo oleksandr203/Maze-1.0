@@ -35,9 +35,7 @@ namespace Maze_1._0
         private async Task DrawCanv(int rows, int columns)
         {               
             field = new GridGameState(columns, rows);
-            Cell[,] cells = field.GetCellsShot();
-            StepOnCell[,] steps = new StepOnCell[columns, rows];
-            steps = field.GetStepsPoints();
+            Cell[,] cells = field.GetCellsShot();            
             DrawingVisual drawingVisual = new DrawingVisual();
             using (DrawingContext drawingContext = drawingVisual.RenderOpen())
             {
@@ -66,22 +64,43 @@ namespace Maze_1._0
                             drawingContext.DrawRoundedRectangle(Brushes.DarkOrange, _pen,
                                 new Rect(PointScaleConvertUpLeft(cells[c, r].GetPosition()), PointScaleConvertDownRight(cells[c, r].GetPosition())),
                                 sizeOfCell / 8, sizeOfCell / 8);
-                        }
-                        if (steps[c, r].Id == 1)
-                        {
-                            drawingContext.DrawEllipse(Brushes.Red, _pen, PointScaleConvertCenterCell(steps[c, r].GetPosition()), sizeOfCell / 5, sizeOfCell / 5);
-                        }
+                        }                        
                     }                   
                 }
             }
             RenderTargetBitmap bmp = new RenderTargetBitmap((int)gameFieldCanvas.Width + 25, (int)gameFieldCanvas.Height + 25, 100, 100, PixelFormats.Pbgra32);
             bmp.Render(drawingVisual);
-            ReDraw(bmp);
-        }
-        public void ReDraw(RenderTargetBitmap bmp)
-        {            
             canvasImage.Source = bmp;
         }
+
+        public void DrawPlayerSolving(int rows, int columns)
+        {
+
+            StepOnCell[,] steps = new StepOnCell[columns, rows];
+            steps = field.GetStepsPoints();
+            DrawingVisual drawingVisual = new DrawingVisual();
+            using (DrawingContext drawingContext = drawingVisual.RenderOpen())
+            {
+                for (int c = 0; c < field.Columns; c++)
+                {
+                    for (int r = 0; r < field.Rows; r++)
+                    {
+                        if (steps[c, r].Id == 1)
+                        {
+                            drawingContext.DrawEllipse(Brushes.Yellow, _pen, PointScaleConvertCenterCell(steps[c, r].GetPosition()), sizeOfCell / 5, sizeOfCell / 5);
+                        }
+                        if (steps[c, r].Id == 2)
+                        {
+                            drawingContext.DrawEllipse(Brushes.Red, _pen, PointScaleConvertCenterCell(steps[c, r].GetPosition()), sizeOfCell / 5, sizeOfCell / 5);
+                        }
+                    }
+                }
+            }
+            RenderTargetBitmap bmp = new RenderTargetBitmap((int)gameFieldCanvas.Width + 25, (int)gameFieldCanvas.Height + 25, 100, 100, PixelFormats.Pbgra32);
+            bmp.Render(drawingVisual);
+            canvasImageSecond.Source = bmp;
+        }
+
         public Point PointScaleConvertUpLeft(Point p)
         {
             Point point = new Point(p.X, p.Y);           
@@ -140,48 +159,52 @@ namespace Maze_1._0
         }
 
         private void drawingCanvas_Loaded(object sender, RoutedEventArgs e)
-        {            
-                        
-        }
+        {
 
+        }
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            switch(e.Key)
+            if (!field.IsFinished)
             {
-                case Key.Enter:
-                    MessageBox.Show("Enter");
-                    break;
+                switch (e.Key)
+                {
+                    case Key.Left:
+                        field.StepLeft();
+                        break;
 
-                case Key.Left:
-                    field.StepLeft();
-                    break;
+                    case Key.Right:
+                        field.StepRight();
+                        break;
 
-                case Key.Right:
-                    field.StepRight();
-                    break; 
-                    
-                case Key.Down:
-                   field.StepDown();
-                    break;
+                    case Key.Down:
+                        field.StepDown();
+                        break;
 
-                case Key.Up:
-                    field.StepUp();
-                    break;
+                    case Key.Up:
+                        field.StepUp();
+                        break;
 
-                default: break;
+                    default: break;
+                }
+            }            
+            field.MarkLocalPlayerPositon();            
+            DrawPlayerSolving((int)(gameFieldCanvas.Height / sizeOfCell), (int)(gameFieldCanvas.Width / sizeOfCell));
+            if(field.IsFinished)
+            {
+                GameOverMenu.Visibility= Visibility.Visible;
             }
-            field.MarkLocalPlayerPositon();
-            DrawCanv((int)(gameFieldCanvas.Height / sizeOfCell), (int)(gameFieldCanvas.Width / sizeOfCell));
         }
 
         private void StartGame_Click(object sender, RoutedEventArgs e)
         {
             StartMenuGrid.Visibility = Visibility.Collapsed;
+            btnStart_Click_1(sender, e);
         }
 
         private async void btnStart_Click_1(object sender, RoutedEventArgs e)
         {
-           await DrawCanv((int)(gameFieldCanvas.Height / sizeOfCell), (int)(gameFieldCanvas.Width / sizeOfCell));
+            await DrawCanv((int)(gameFieldCanvas.Height / sizeOfCell), (int)(gameFieldCanvas.Width / sizeOfCell));
+             DrawPlayerSolving((int)(gameFieldCanvas.Height / sizeOfCell), (int)(gameFieldCanvas.Width / sizeOfCell));        
         }
 
         private void GoToStartMenu_Click(object sender, RoutedEventArgs e)
@@ -200,6 +223,11 @@ namespace Maze_1._0
             LabelShowResolution.Content = $"You choose {(int)((Slider)sender).Value} Colunms";
             sizeOfCell = (gameFieldCanvas.Width / ((Slider)sender).Value);
             cellSizeSlider.IsEnabled = true;
+        }
+
+        private void acceptAgain_Click(object sender, RoutedEventArgs e)
+        {
+            GameOverMenu.Visibility = Visibility.Hidden;
         }
     }    
 }
