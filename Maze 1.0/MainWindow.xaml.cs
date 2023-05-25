@@ -75,9 +75,8 @@ namespace Maze_1._0
 
         public void DrawPlayerSolving(int rows, int columns)
         {
-
             StepOnCell[,] steps = new StepOnCell[columns, rows];
-            steps = field.GetStepsPoints();
+            steps = field.GetStepsPoints();            
             DrawingVisual drawingVisual = new DrawingVisual();
             using (DrawingContext drawingContext = drawingVisual.RenderOpen())
             {
@@ -92,9 +91,10 @@ namespace Maze_1._0
                         if (steps[c, r].Id == 2)
                         {
                             drawingContext.DrawEllipse(Brushes.Red, _pen, PointScaleConvertCenterCell(steps[c, r].GetPosition()), sizeOfCell / 5, sizeOfCell / 5);
-                        }
+                        } 
                     }
                 }
+                drawingContext.DrawEllipse(Brushes.LightBlue, _pen, PointScaleConvertCenterCell(field.CurrentPosition), sizeOfCell / 5, sizeOfCell / 5);                
             }
             RenderTargetBitmap bmp = new RenderTargetBitmap((int)gameFieldCanvas.Width + 25, (int)gameFieldCanvas.Height + 25, 100, 100, PixelFormats.Pbgra32);
             bmp.Render(drawingVisual);
@@ -162,6 +162,7 @@ namespace Maze_1._0
         {
 
         }
+
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             if (!field.IsFinished)
@@ -186,11 +187,13 @@ namespace Maze_1._0
 
                     default: break;
                 }
-            }            
-            field.MarkLocalPlayerPositon();            
-            DrawPlayerSolving((int)(gameFieldCanvas.Height / sizeOfCell), (int)(gameFieldCanvas.Width / sizeOfCell));
+
+                field.MarkLocalPlayerPositon();
+                DrawPlayerSolving((int)(gameFieldCanvas.Height / sizeOfCell), (int)(gameFieldCanvas.Width / sizeOfCell));
+            }
             if(field.IsFinished)
             {
+                GameOverMenu.Opacity = 50;
                 GameOverMenu.Visibility= Visibility.Visible;
             }
         }

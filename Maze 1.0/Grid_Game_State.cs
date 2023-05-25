@@ -21,6 +21,7 @@ namespace Maze_1._0
         public int Columns { get; private set; }
         public int Rows { get; private set; }
         public bool IsFinished { get; private set; } = false;
+        public Point CurrentPosition { get; private set; }
 
         public GridGameState(int columns, int rows)
         {
@@ -84,8 +85,7 @@ namespace Maze_1._0
             {
                 currentPlayerPosition.MarkAsStepped();
             }
-            else Finish();
-            
+            else Finish();            
         }
 
         public void StepUp()
@@ -215,7 +215,8 @@ namespace Maze_1._0
         {
             int c = random.Next(0, Columns);
             gridOfCells[c, 0].SetStartCell();
-            currentPlayerPosition = stepOnCells[c, 0];            
+            currentPlayerPosition = stepOnCells[c, 0];  
+            CurrentPosition = stepOnCells[c, 0].GetPosition();
             return c;
         }
         
@@ -261,6 +262,7 @@ namespace Maze_1._0
 
         public StepOnCell[,] GetStepsPoints()
         {
+            CurrentPosition = currentPlayerPosition.GetPosition();
             return stepOnCells;
         }
     }

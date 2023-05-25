@@ -30,6 +30,16 @@ namespace Maze_1._0
             }
             else Id = 2;
         }
+
+        public void MarkAsCurrentd()
+        {
+            if (Id == 0)
+            {
+                Id = 3;
+            }
+            //else Id = 2;
+        }
+
         public void ClearStep()
         {
             Id = 0;
