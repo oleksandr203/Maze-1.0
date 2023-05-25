@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 
 namespace Maze_1._0
 {
@@ -101,11 +100,6 @@ namespace Maze_1._0
         public void StepRight()
         {
             currentPlayerPosition = stepOnCells[currentPlayerPosition.X + 1, currentPlayerPosition.Y];
-        }
-
-        private void Move(KeyEventArgs k)
-        {
-
         }
 
         private bool IsFreeCell()
