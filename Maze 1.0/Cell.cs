@@ -10,12 +10,13 @@ namespace Maze_1._0
     public class Cell
     {
         public int X { get; private set; }
-        public int Y { get; private set; }
-              
-        public bool VetricalWall{ get; private set; }
+        public int Y { get; private set; }              
+        public bool VerticalWall { get; private set; }
         public bool HorizontalWall { get; private set; }
         public bool IsStartCell { get; private set; }
         public bool IsFinishCell { get; private set; }
+        public bool IsStepped { get; private set; } = false;  
+        public bool IsSteppedBySolution { get; private set; }
         public int Id { get; private set; }
 
         public Cell(int column, int row) 
@@ -23,7 +24,7 @@ namespace Maze_1._0
             X = column;
             Y = row;
             HorizontalWall = true;
-            VetricalWall = true;
+            VerticalWall = true;
         }
 
         public void SetStartCell()
@@ -57,15 +58,15 @@ namespace Maze_1._0
              Id = 0;
         }
 
-        public void CanMoveRight()
+        public void NoWallRight()
         {
-            if (VetricalWall)
+            if (VerticalWall)
             {
-                VetricalWall = false;
+                VerticalWall = false;
             }           
         }
 
-        public void CanMoveDown()
+        public void NoWallDown()
         {
             if (HorizontalWall)
             {
@@ -73,20 +74,32 @@ namespace Maze_1._0
             }           
         }
 
-        public void CanNotMoveRight()
+        public void ClearCell()
         {
-            if (VetricalWall)
+            Id = 0;
+            IsStepped = false;
+            IsStartCell = false;
+            IsFinishCell = false;            
+        }
+        
+        public void ClearAutoStep()
+        {
+            if (IsSteppedBySolution)
             {
-                VetricalWall = true;
+                IsSteppedBySolution = false;
             }
         }
 
-        public void CanNotMoveDown()
+        public void MarkAsStepped(bool auto)
         {
-            if (HorizontalWall)
+            if (!IsSteppedBySolution & auto)
             {
-                HorizontalWall = true;
-            }           
+                IsSteppedBySolution = true;
+            }
+            if (!IsStepped & !auto)
+            {
+                IsStepped = true;
+            }
         }
 
         public Point GetPosition()

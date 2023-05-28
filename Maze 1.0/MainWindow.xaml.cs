@@ -13,7 +13,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Maze_1._0
 {
@@ -24,9 +23,10 @@ namespace Maze_1._0
     {
         double sizeOfCell = 10;
         GridGameState field;
-        StepOnCell[,] steps;
-        Pen _pen = new Pen(Brushes.Brown, 1);
-
+        Cell[,] steps;
+        Cell[,] stepsOfSolution;        
+        Pen _pen = new Pen(Brushes.Gray, 1);
+              
         public MainWindow()
         {
             InitializeComponent();            
@@ -43,7 +43,7 @@ namespace Maze_1._0
                 {
                     for (int r = 0; r < field.Rows; r++)
                     {
-                        if (cells[c, r].VetricalWall)
+                        if (cells[c, r].VerticalWall)
                         {
                             drawingContext.DrawLine(_pen, PointScaleConvertUpRight(cells[c, r].GetPosition()),
                                 PointScaleConvertDownRight(cells[c, r].GetPosition()));
@@ -55,15 +55,15 @@ namespace Maze_1._0
                         }
                         if (cells[c, r].Id == 1)
                         {
-                            drawingContext.DrawRoundedRectangle(Brushes.Green, _pen,
+                            drawingContext.DrawRoundedRectangle(null, new Pen(Brushes.Green, 4),
                                 new Rect(PointScaleConvertUpLeft(cells[c, r].GetPosition()), PointScaleConvertDownRight(cells[c, r].GetPosition())),
-                                sizeOfCell / 8, sizeOfCell / 8);
+                                sizeOfCell / 2, sizeOfCell / 2);
                         }
                         if (cells[c, r].IsFinishCell)
                         {                           
-                            drawingContext.DrawRoundedRectangle(Brushes.DarkOrange, _pen,
+                            drawingContext.DrawRoundedRectangle(null, new Pen(Brushes.OrangeRed, 4),
                                 new Rect(PointScaleConvertUpLeft(cells[c, r].GetPosition()), PointScaleConvertDownRight(cells[c, r].GetPosition())),
-                                sizeOfCell / 8, sizeOfCell / 8);
+                                sizeOfCell / 2, sizeOfCell / 2);
                         }                        
                     }                   
                 }
@@ -74,29 +74,50 @@ namespace Maze_1._0
         }
 
         public void DrawPlayerSolving(int rows, int columns)
-        {
-            StepOnCell[,] steps = new StepOnCell[columns, rows];
-            steps = field.GetStepsPoints();            
+        {                   
             DrawingVisual drawingVisual = new DrawingVisual();
             using (DrawingContext drawingContext = drawingVisual.RenderOpen())
-            {
+            {                
+                steps = field.GetStepsPoints();
                 for (int c = 0; c < field.Columns; c++)
                 {
                     for (int r = 0; r < field.Rows; r++)
                     {
-                        if (steps[c, r].Id == 1)
+                        if (steps[c, r].IsStepped)
                         {
-                            drawingContext.DrawEllipse(Brushes.Yellow, _pen, PointScaleConvertCenterCell(steps[c, r].GetPosition()), sizeOfCell / 5, sizeOfCell / 5);
-                        }
-                        if (steps[c, r].Id == 2)
-                        {
-                            drawingContext.DrawEllipse(Brushes.Red, _pen, PointScaleConvertCenterCell(steps[c, r].GetPosition()), sizeOfCell / 5, sizeOfCell / 5);
-                        } 
+                            drawingContext.DrawEllipse(Brushes.Yellow, null, PointScaleConvertCenterCell(steps[c, r].GetPosition()),
+                                sizeOfCell / 7, sizeOfCell / 7);
+                        }                       
                     }
                 }
-                drawingContext.DrawEllipse(Brushes.LightBlue, _pen, PointScaleConvertCenterCell(field.CurrentPosition), sizeOfCell / 5, sizeOfCell / 5);                
+                drawingContext.DrawEllipse(Brushes.Tomato, null, PointScaleConvertCenterCell(field.CurrentPosition), sizeOfCell / 4, sizeOfCell / 4);                
             }
-            RenderTargetBitmap bmp = new RenderTargetBitmap((int)gameFieldCanvas.Width + 25, (int)gameFieldCanvas.Height + 25, 100, 100, PixelFormats.Pbgra32);
+            RenderTargetBitmap bmp = new RenderTargetBitmap((int)gameFieldCanvas.Width + 25,
+                (int)gameFieldCanvas.Height + 25, 100, 100, PixelFormats.Pbgra32);
+            bmp.Render(drawingVisual);
+            canvasImageSecond.Source = bmp;
+        }
+
+        public void DrawAutoSolving(int rows, int columns)
+        {
+            DrawingVisual drawingVisual = new DrawingVisual();
+            using (DrawingContext drawingContext = drawingVisual.RenderOpen())
+            {                         
+                stepsOfSolution = field.GetAutoSolution();                
+                for (int c = 0; c < field.Columns; c++)
+                {
+                    for (int r = 0; r < field.Rows; r++)
+                    {
+                        if (stepsOfSolution[c, r].IsSteppedBySolution)
+                        {
+                            drawingContext.DrawEllipse(Brushes.Red, null, PointScaleConvertCenterCell(stepsOfSolution[c, r].GetPosition()),
+                                sizeOfCell / 6, sizeOfCell / 6);
+                        }
+                    }
+                }                
+            }
+            RenderTargetBitmap bmp = new RenderTargetBitmap((int)gameFieldCanvas.Width + 25,
+                (int)gameFieldCanvas.Height + 25, 100, 100, PixelFormats.Pbgra32);
             bmp.Render(drawingVisual);
             canvasImageSecond.Source = bmp;
         }
@@ -155,7 +176,11 @@ namespace Maze_1._0
 
         private void btnHelp_Click(object sender, RoutedEventArgs e)
         {
-            GameOverMenu.Visibility = Visibility.Visible; 
+            DrawAutoSolving((int)(gameFieldCanvas.Height / sizeOfCell), (int)(gameFieldCanvas.Width / sizeOfCell));
+            if(field.IsFinished)
+            {
+                GameOverMenu.Visibility = Visibility.Visible;
+            }            
         }
 
         private void drawingCanvas_Loaded(object sender, RoutedEventArgs e)

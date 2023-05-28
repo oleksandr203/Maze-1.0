@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Maze_1._0"
         mc:Ignorable="d"        
-        Title="MainWindow" Width="800" Height="800" MinWidth="850" MinHeight="600" 
+        Title="Maze 1.0" Width="800" Height="800" MinWidth="850" MinHeight="600" 
         FontFamily="Segue UI Light" FontSize="16" WindowStartupLocation="CenterScreen"
         KeyDown="Window_KeyDown">
     <Grid>
@@ -65,10 +65,8 @@
                         ClipToBounds="False">
                         <Image Name="canvasImageSecond"/>
                     </Canvas>
-                </Canvas>
-                
-            </Border>
-           
+                </Canvas>                
+            </Border>           
         </Viewbox>
         <StatusBar  x:Name="stBar" 
                     Grid.Row="1"
@@ -77,8 +75,7 @@
                     VerticalAlignment="Bottom">
             <Label Content="Ready"/>
         </StatusBar>
-        <Grid x:Name="StartMenuGrid"              
-              Margin="160, 50, 160, 100"
+        <Grid x:Name="StartMenuGrid" 
               Opacity="60"
               Visibility="Visible"
               Grid.RowSpan="2"
@@ -109,7 +106,7 @@
                     Margin="10,5,0,0"
                     VerticalAlignment="Center"
                     Width="150"                   
-                    Minimum="10"
+                    Minimum="5"
                     Maximum="50"
                     SmallChange="5"                     
                     Value="10" 
