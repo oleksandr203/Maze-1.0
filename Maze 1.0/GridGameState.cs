@@ -68,23 +68,24 @@ namespace Maze_1._0
 
         private void GenerateAutoSolution()
         {            
-            stepsOfSolving[StartCellProp.X, StartCellProp.Y].MarkAsStepped(true);             
-            MakeAutoStepps();
-        }
+            stepsOfSolving[StartCellProp.X, StartCellProp.Y].MarkAsStepped(true);
+            MakeAutoStepps();            
+        }        
 
         private void MakeAutoStepps()
         {
             currentCellAuto = StartCellProp;
             Random rand = new Random();            
             currentDirections = CurrentDirections(currentCellAuto);
-            stepsAfterCrossWays = 0; 
-            for (int oo = 0; oo < 5; oo++)
+            stepsAfterCrossWays = 0;            
+            while(!IsFinished)
             {
                 int randTemp = random.Next(4);
                 ClearAutoHistory();
                 currentCellAuto = StartCellProp;
-                for (int c = 0; c < 60; c++)
+                for (int c = 0; c < 200; c++)
                 {
+                    stepsAfterCrossWays = 0;
                     if (!IsFinished)
                     {
                         stepsOfSolving[StartCellProp.X, StartCellProp.Y].MarkAsStepped(true);
@@ -112,7 +113,6 @@ namespace Maze_1._0
                                 randTemp = random.Next(4);
                             }
                         }
-
                         switch (randTemp)
                         {
                             case 0:
@@ -131,8 +131,8 @@ namespace Maze_1._0
                                 break;
                             case 2:
                                 {
-                                    currentCellAuto = gridOfCells[currentCellAuto.X, currentCellAuto.Y + 1];
-                                    CheckForFinish();//down
+                                    currentCellAuto = gridOfCells[currentCellAuto.X, currentCellAuto.Y + 1]; //down
+                                    CheckForFinish();
                                     MakeNewAutoCell();
                                 }
                                 break;
@@ -149,11 +149,7 @@ namespace Maze_1._0
                     {
                         break;
                     }
-                }
-                if(IsFinished)
-                {                    
-                    break;
-                }
+                }                
             }            
         }
         private void MakeNewAutoCell()
@@ -182,8 +178,7 @@ namespace Maze_1._0
                 if (direction)
                     direct++;
             }
-            return direct;
-            
+            return direct;            
         }
 
         private void ClearAutoHistory()
@@ -194,7 +189,7 @@ namespace Maze_1._0
             }
         }
 
-        private void MakeSolutionStepForward()
+        private void MakeSolutionStepsShot()
         {
            
         }

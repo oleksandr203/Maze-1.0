@@ -32,8 +32,9 @@ namespace Maze_1._0
             InitializeComponent();            
         }
        
-        private async Task DrawCanv(int rows, int columns)
-        {               
+        private async void DrawCanv(int rows, int columns)
+        {
+            gameFieldCanvas.Width = 500;
             field = new GridGameState(columns, rows);
             Cell[,] cells = field.GetCellsShot();            
             DrawingVisual drawingVisual = new DrawingVisual();
@@ -116,12 +117,11 @@ namespace Maze_1._0
                     }
                 }                
             }
-            RenderTargetBitmap bmp = new RenderTargetBitmap((int)gameFieldCanvas.Width + 25,
-                (int)gameFieldCanvas.Height + 25, 100, 100, PixelFormats.Pbgra32);
+            RenderTargetBitmap bmp = new RenderTargetBitmap((int)gameFieldCanvas.Width + 25, (int)gameFieldCanvas.Height + 25, 100, 100, PixelFormats.Pbgra32);
             bmp.Render(drawingVisual);
             canvasImageSecond.Source = bmp;
         }
-
+        
         public Point PointScaleConvertUpLeft(Point p)
         {
             Point point = new Point(p.X, p.Y);           
@@ -226,12 +226,13 @@ namespace Maze_1._0
         private void StartGame_Click(object sender, RoutedEventArgs e)
         {
             StartMenuGrid.Visibility = Visibility.Collapsed;
+
             btnStart_Click_1(sender, e);
         }
 
-        private async void btnStart_Click_1(object sender, RoutedEventArgs e)
+        private void btnStart_Click_1(object sender, RoutedEventArgs e)
         {
-            await DrawCanv((int)(gameFieldCanvas.Height / sizeOfCell), (int)(gameFieldCanvas.Width / sizeOfCell));
+             DrawCanv((int)(gameFieldCanvas.Height / sizeOfCell), (int)(gameFieldCanvas.Width / sizeOfCell));
              DrawPlayerSolving((int)(gameFieldCanvas.Height / sizeOfCell), (int)(gameFieldCanvas.Width / sizeOfCell));        
         }
 
@@ -256,6 +257,7 @@ namespace Maze_1._0
         private void acceptAgain_Click(object sender, RoutedEventArgs e)
         {
             GameOverMenu.Visibility = Visibility.Hidden;
+            btnStart_Click_1(sender, e);
         }
     }    
 }

@@ -14,7 +14,7 @@
                 <GradientStop Color="Black"/>
                 <GradientStop Color="White" Offset="1"/>
                 <GradientStop Color="#FF7AA0A1" Offset="0.8"/>
-                </LinearGradientBrush>
+            </LinearGradientBrush>
         </Grid.Background>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -65,8 +65,8 @@
                         ClipToBounds="False">
                         <Image Name="canvasImageSecond"/>
                     </Canvas>
-                </Canvas>                
-            </Border>           
+                </Canvas>
+            </Border>
         </Viewbox>
         <StatusBar  x:Name="stBar" 
                     Grid.Row="1"
@@ -88,14 +88,14 @@
                 </LinearGradientBrush>
             </Grid.Background>
             <StackPanel Orientation="Vertical"
-                        Margin="50"
+                        Margin="90"
                         VerticalAlignment="Center">
                 <Button x:Name="StartGame" 
                         Content="START"
-                        Margin="10"
-                        Height="40"
-                        FontSize="32"
-                        Click="StartGame_Click"/>
+                        Width="400"                        
+                        Height="120"
+                        FontSize="35"
+                        Click="StartGame_Click" BorderBrush="#FF970E0E" BorderThickness="5,5,5,5" Background="#FFCE9298"/>
                 <Label x:Name="LabelShowResolution"
                     Content="Choose resolution" 
                        Margin="20"
@@ -112,7 +112,7 @@
                     Value="10" 
                     ValueChanged="cellSizeSlider_ValueChanged" 
                         LargeChange="5" TickPlacement="BottomRight" TickFrequency="5"/>
-            </StackPanel> 
+            </StackPanel>
         </Grid>
         <Grid x:Name="GameOverMenu"
               Opacity="80"
@@ -131,14 +131,14 @@
                         VerticalAlignment="Center">
                 <TextBlock Text="YOU WIN!"
                            FontSize="48"
-                           TextAlignment="Center"/>               
+                           TextAlignment="Center"/>
                 <Button x:Name="acceptAgain"
-                        Content="OK"
+                        Content="Play Again"
                         Margin="20" 
-                        Padding="5" 
+                        Padding="25" 
                         Background="AliceBlue"
                         Click="acceptAgain_Click"/>
-            </StackPanel>            
+            </StackPanel>
         </Grid>
     </Grid>
 
