@@ -74,6 +74,7 @@ namespace Maze_1._0
 
         private void MakeAutoStepps()
         {
+            ClearAutoHistory();
             currentCellAuto = StartCellProp;
             Random rand = new Random();            
             currentDirections = CurrentDirections(currentCellAuto);
@@ -81,7 +82,7 @@ namespace Maze_1._0
             while(!IsFinished)
             {
                 int randTemp = random.Next(4);
-                ClearAutoHistory();
+                ClearAutoHistory(); //for loop logic, to do fixing
                 currentCellAuto = StartCellProp;
                 for (int c = 0; c < 200; c++)
                 {

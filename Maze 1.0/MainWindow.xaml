@@ -47,7 +47,7 @@
         </WrapPanel>
         <Viewbox Grid.Column="1"
                      Grid.Row="0"
-                     Margin="0,5,0,5">
+                     Margin="0,5,0,0">
             <Border BorderBrush="Brown"
                     Background="DimGray"
                     BorderThickness="5">
@@ -69,6 +69,7 @@
             </Border>
         </Viewbox>
         <StatusBar  x:Name="stBar" 
+                    Height="35"
                     Grid.Row="1"
                     Grid.ColumnSpan="3"
                     BorderThickness="2"

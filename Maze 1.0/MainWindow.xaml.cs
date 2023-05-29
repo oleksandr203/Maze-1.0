@@ -24,6 +24,7 @@ namespace Maze_1._0
         double sizeOfCell = 10;
         GridGameState field;
         Cell[,] steps;
+        Cell[,] cells;
         Cell[,] stepsOfSolution;        
         Pen _pen = new Pen(Brushes.Gray, 1);
               
@@ -33,10 +34,11 @@ namespace Maze_1._0
         }
        
         private async void DrawCanv(int rows, int columns)
-        {
-            gameFieldCanvas.Width = 500;
+        {           
             field = new GridGameState(columns, rows);
-            Cell[,] cells = field.GetCellsShot();            
+            gameFieldCanvas.Width = columns * sizeOfCell;
+            gameFieldCanvas.Height = rows * sizeOfCell;
+            await Task.Run(() => cells = field.GetCellsShot());            
             DrawingVisual drawingVisual = new DrawingVisual();
             using (DrawingContext drawingContext = drawingVisual.RenderOpen())
             {
@@ -99,12 +101,13 @@ namespace Maze_1._0
             canvasImageSecond.Source = bmp;
         }
 
-        public void DrawAutoSolving(int rows, int columns)
+        public async void DrawAutoSolving(int rows, int columns)
         {
             DrawingVisual drawingVisual = new DrawingVisual();
+            await Task.Run(() => stepsOfSolution = field.GetAutoSolution());           
+            btnHelp.IsEnabled = false;
             using (DrawingContext drawingContext = drawingVisual.RenderOpen())
-            {                         
-                stepsOfSolution = field.GetAutoSolution();                
+            {                               
                 for (int c = 0; c < field.Columns; c++)
                 {
                     for (int r = 0; r < field.Rows; r++)
@@ -175,12 +178,8 @@ namespace Maze_1._0
         }
 
         private void btnHelp_Click(object sender, RoutedEventArgs e)
-        {
-            DrawAutoSolving((int)(gameFieldCanvas.Height / sizeOfCell), (int)(gameFieldCanvas.Width / sizeOfCell));
-            if(field.IsFinished)
-            {
-                GameOverMenu.Visibility = Visibility.Visible;
-            }            
+        {                 
+            DrawAutoSolving((int)(gameFieldCanvas.Height / sizeOfCell), (int)(gameFieldCanvas.Width / sizeOfCell));            
         }
 
         private void drawingCanvas_Loaded(object sender, RoutedEventArgs e)
