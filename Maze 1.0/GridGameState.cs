@@ -11,39 +11,39 @@ namespace Maze_1._0
 {
     public class GridGameState
     {
-        enum SidesOfWorld { Up = 0, Right = 1, Down = 2 , Left = 3}
+        enum SidesOfWorld { Up = 0, Right = 1, Down = 2, Left = 3 }
         Cell[,] gridOfCells;
         Cell[,] stepOnCells;
         Cell[,] stepsOfSolving;
-        Cell currentPosition;        
+        Cell currentPosition;
         Cell currentCell;
         Cell currentCellAuto;
-        bool successMarkNewCell = false;        
+        bool successMarkNewCell = false;
         bool successAutoNewCell = false;
-        bool[] currentDirections = { false, false, false, false};
+        bool[] currentDirections = { false, false, false, false };
         SidesOfWorld[] tempDirections;
         int stepsAfterCrossWays = 0;
         int direct = 0;
         Random random = new Random();
-       
+
         public int Columns { get; private set; }
         public int Rows { get; private set; }
         public bool IsFinished { get; private set; } = false;
         public Point CurrentPosition { get; private set; }
         public Cell StartCellProp { get; private set; }
-        public Cell FinishCellProp { get; private set; }       
+        public Cell FinishCellProp { get; private set; }
         public GridGameState(int columns, int rows)
         {
             Columns = columns;
             Rows = rows;
-            gridOfCells = new Cell[Columns, Rows];     
-            
+            gridOfCells = new Cell[Columns, Rows];
+
             for (int r = 0; r < rows; r++)
             {
                 for (int c = 0; c < columns; c++)
                 {
                     gridOfCells[c, r] = new Cell(c, r);
-                    gridOfCells[c, r].SetEmptyCell();                    
+                    gridOfCells[c, r].SetEmptyCell();
                 }
             }
             stepOnCells = new Cell[Columns, Rows];
@@ -56,30 +56,31 @@ namespace Maze_1._0
                 }
             }
             GenerateBranchesOnField();
-            MarkLocalPlayerPositon();            
+            MarkLocalPlayerPositon();
         }
 
-        private void GenerateBranchesOnField() 
+        private void GenerateBranchesOnField()
         {
             StartCell();
-            FinishCell();          
-            MakeBranchingWay(StartCellProp);            
+            FinishCell();
+            MakeBranchingWay(StartCellProp);
         }
 
         private void GenerateAutoSolution()
-        {            
-            stepsOfSolving[StartCellProp.X, StartCellProp.Y].MarkAsStepped(true);
-            MakeAutoStepps();            
-        }        
+        {
+            stepsOfSolving[StartCellProp.X, StartCellProp.Y].MarkAsStepped(true);            
+            MakeAutoStepps();
+            IsFinished = false;
+        }
 
         private void MakeAutoStepps()
         {
             ClearAutoHistory();
             currentCellAuto = StartCellProp;
-            Random rand = new Random();            
+            Random rand = new Random();
             currentDirections = CurrentDirections(currentCellAuto);
-            stepsAfterCrossWays = 0;            
-            while(!IsFinished)
+            stepsAfterCrossWays = 0;
+            while (!IsFinished)
             {
                 int randTemp = random.Next(4);
                 ClearAutoHistory(); //for loop logic, to do fixing
@@ -150,8 +151,8 @@ namespace Maze_1._0
                     {
                         break;
                     }
-                }                
-            }            
+                }
+            }
         }
         private void MakeNewAutoCell()
         {
@@ -164,7 +165,7 @@ namespace Maze_1._0
         private bool CheckForFinish()
         {
             if (currentCellAuto.X == FinishCellProp.X && currentCellAuto.Y == FinishCellProp.Y)
-            {               
+            {
                 Finish();
                 return true;
             }
@@ -179,7 +180,7 @@ namespace Maze_1._0
                 if (direction)
                     direct++;
             }
-            return direct;            
+            return direct;
         }
 
         private void ClearAutoHistory()
@@ -192,7 +193,7 @@ namespace Maze_1._0
 
         private void MakeSolutionStepsShot()
         {
-           
+
         }
 
         private void MakeSolutionStepBack()
@@ -201,7 +202,7 @@ namespace Maze_1._0
         }
 
         private bool[] CurrentDirections(Cell _current)
-        {            
+        {
             //up
             if (_current.Y >= 1 && !gridOfCells[_current.X, _current.Y - 1].HorizontalWall && !gridOfCells[_current.X, _current.Y - 1].IsSteppedBySolution)
             {
@@ -228,7 +229,7 @@ namespace Maze_1._0
             else
             {
                 currentDirections[(int)SidesOfWorld.Down] = false;
-            }            
+            }
             //left
             if (_current.X >= 1 && !gridOfCells[_current.X - 1, _current.Y].VerticalWall && !gridOfCells[_current.X - 1, _current.Y].IsSteppedBySolution)
             {
@@ -242,20 +243,20 @@ namespace Maze_1._0
         }
 
         private void MakeBranchingWay(Cell startCell)
-        { 
-            currentCell = startCell;            
-            GenarateBranch( currentCell);
+        {
+            currentCell = startCell;
+            GenarateBranch(currentCell);
 
             for (; IsFreeCell();)
             {
                 Cell[] cellsForBranch = CellForBranching();
                 try { GenarateBranch(cellsForBranch[random.Next(cellsForBranch.Length)]); }
 
-                catch 
+                catch
                 {
                     foreach (var g in gridOfCells)
                         g.SetEmptyCell();
-                        GenerateBranchesOnField(); 
+                    GenerateBranchesOnField();
                 }
             }
         }
@@ -266,13 +267,13 @@ namespace Maze_1._0
             {
                 currentPosition.MarkAsStepped(false);
             }
-            else Finish();            
-        }        
+            else Finish();
+        }
 
         public void StepUp()
         {
             if (currentPosition.Y >= 1 && !gridOfCells[currentPosition.X, currentPosition.Y - 1].HorizontalWall)
-            currentPosition = stepOnCells[currentPosition.X, currentPosition.Y - 1];
+                currentPosition = stepOnCells[currentPosition.X, currentPosition.Y - 1];
         }
 
         public void StepDown()
@@ -303,8 +304,8 @@ namespace Maze_1._0
             foreach (var cell in gridOfCells)
                 if (cell.Id == 0)
                 {
-                    return true;                    
-                }                
+                    return true;
+                }
             return false;
         }
 
@@ -314,24 +315,24 @@ namespace Maze_1._0
             foreach (var cell in gridOfCells)
                 if (cell.Id == 3)
                 {
-                   cellCanBranch.Add(cell);
-                }           
+                    cellCanBranch.Add(cell);
+                }
             return cellCanBranch.ToArray();
         }
 
-        private void GenarateBranch( Cell currentCell)
+        private void GenarateBranch(Cell currentCell)
         {
             Random rand = new Random();
             int variatyOfMaxWays = 3;
 
-            while(IsFreeCell())
-            {                
+            while (IsFreeCell())
+            {
                 currentCell = SetFlags(rand.Next(4), currentCell);
-                if(successMarkNewCell)
+                if (successMarkNewCell)
                 {
                     successMarkNewCell = false;
-                }                
-               
+                }
+
                 else if (!successMarkNewCell && variatyOfMaxWays > 0)
                 {
                     variatyOfMaxWays--;
@@ -341,15 +342,15 @@ namespace Maze_1._0
                     {
                         successMarkNewCell = false;
                         variatyOfMaxWays = 3;
-                    }                    
+                    }
                 }
                 else if (variatyOfMaxWays <= 0)
                     break;
             }
-        }       
+        }
 
         private Cell SetFlags(int random, Cell currentCell)
-        {  
+        {
             switch (random)
             {
                 case 0:
@@ -387,7 +388,7 @@ namespace Maze_1._0
                         successMarkNewCell = true;
                         return gridOfCells[currentCell.X + 1, currentCell.Y];
                     }
-                    break;                                 
+                    break;
             }
             return currentCell;
         }
@@ -396,23 +397,23 @@ namespace Maze_1._0
         {
             int c = random.Next(0, Columns);
             gridOfCells[c, 0].SetStartCell();
-            currentPosition = stepOnCells[c, 0];  
-            CurrentPosition = stepOnCells[c, 0].GetPosition();           
-            StartCellProp = currentPosition;            
+            currentPosition = stepOnCells[c, 0];
+            CurrentPosition = stepOnCells[c, 0].GetPosition();
+            StartCellProp = currentPosition;
         }
-        
+
         private void FinishCell()
         {
             int c = random.Next(0, Columns);
-            gridOfCells[c, Rows-1].SetFinishCell();           
+            gridOfCells[c, Rows - 1].SetFinishCell();
             FinishCellProp = gridOfCells[c, Rows - 1];
         }
 
         private bool CanUp(Cell current)
         {
-           if (current.Y > 0 && gridOfCells[current.X, current.Y - 1].Id == 0)
+            if (current.Y > 0 && gridOfCells[current.X, current.Y - 1].Id == 0)
                 return true;
-           return false;
+            return false;
         }
 
         private bool CanDown(Cell current)
@@ -435,7 +436,7 @@ namespace Maze_1._0
                 return true;
             return false;
         }
-       
+
         public Cell[,] GetCellsShot()
         {
             return gridOfCells;
@@ -448,10 +449,10 @@ namespace Maze_1._0
         }
 
         public Cell[,] GetAutoSolution()
-        {
-            stepsOfSolving = gridOfCells;
-            GenerateAutoSolution();
-            return stepsOfSolving;
+        {            
+                stepsOfSolving = gridOfCells;
+                GenerateAutoSolution();
+                return stepsOfSolving;
         }
     }
 }

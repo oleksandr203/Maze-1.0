@@ -76,7 +76,7 @@ namespace Maze_1._0
             canvasImage.Source = bmp;
         }
 
-        public void DrawPlayerSolving(int rows, int columns)
+        public void DrawPlayerSolving()
         {                   
             DrawingVisual drawingVisual = new DrawingVisual();
             using (DrawingContext drawingContext = drawingVisual.RenderOpen())
@@ -101,11 +101,11 @@ namespace Maze_1._0
             canvasImageSecond.Source = bmp;
         }
 
-        public async void DrawAutoSolving(int rows, int columns)
+        public async void DrawAutoSolving()
         {
             DrawingVisual drawingVisual = new DrawingVisual();
             await Task.Run(() => stepsOfSolution = field.GetAutoSolution());           
-            btnHelp.IsEnabled = false;
+           
             using (DrawingContext drawingContext = drawingVisual.RenderOpen())
             {                               
                 for (int c = 0; c < field.Columns; c++)
@@ -123,6 +123,7 @@ namespace Maze_1._0
             RenderTargetBitmap bmp = new RenderTargetBitmap((int)gameFieldCanvas.Width + 25, (int)gameFieldCanvas.Height + 25, 100, 100, PixelFormats.Pbgra32);
             bmp.Render(drawingVisual);
             canvasImageSecond.Source = bmp;
+            btnHelp.IsEnabled = true;
         }
         
         public Point PointScaleConvertUpLeft(Point p)
@@ -178,8 +179,10 @@ namespace Maze_1._0
         }
 
         private void btnHelp_Click(object sender, RoutedEventArgs e)
-        {                 
-            DrawAutoSolving((int)(gameFieldCanvas.Height / sizeOfCell), (int)(gameFieldCanvas.Width / sizeOfCell));            
+        {            
+            btnHelp.IsEnabled = false;
+            DrawAutoSolving();
+            
         }
 
         private void drawingCanvas_Loaded(object sender, RoutedEventArgs e)
@@ -213,7 +216,7 @@ namespace Maze_1._0
                 }
 
                 field.MarkLocalPlayerPositon();
-                DrawPlayerSolving((int)(gameFieldCanvas.Height / sizeOfCell), (int)(gameFieldCanvas.Width / sizeOfCell));
+                DrawPlayerSolving();
             }
             if(field.IsFinished)
             {
@@ -232,7 +235,7 @@ namespace Maze_1._0
         private void btnStart_Click_1(object sender, RoutedEventArgs e)
         {
              DrawCanv((int)(gameFieldCanvas.Height / sizeOfCell), (int)(gameFieldCanvas.Width / sizeOfCell));
-             DrawPlayerSolving((int)(gameFieldCanvas.Height / sizeOfCell), (int)(gameFieldCanvas.Width / sizeOfCell));        
+             DrawPlayerSolving();        
         }
 
         private void GoToStartMenu_Click(object sender, RoutedEventArgs e)

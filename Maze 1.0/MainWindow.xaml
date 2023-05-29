@@ -25,26 +25,32 @@
             <ColumnDefinition x:Name="gameSide" Width="Auto"/>
             <ColumnDefinition x:Name="rightSide" Width="*"/>
         </Grid.ColumnDefinitions>
-        <WrapPanel Orientation="Vertical" 
-                       Grid.Row="0" Grid.Column="2"
-                       HorizontalAlignment="Right">
-            <Button x:Name="btnStart" 
+        <Viewbox
+            Grid.Row="0"
+            Grid.Column="2"
+            MaxWidth="200">
+            
+            <WrapPanel Orientation="Vertical"                   
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center">
+                <Button x:Name="btnStart" 
                     Content="New Maze" 
                     Style="{StaticResource mazeButtons}" 
                     Click="btnStart_Click_1"/>
-            <Button x:Name="GoToStartMenu"
+                <Button x:Name="GoToStartMenu"
                     Content="Menu"
                     Style="{StaticResource mazeButtons}"
                     Click="GoToStartMenu_Click"/>
-            <Button x:Name="btnHelp" 
+                <Button x:Name="btnHelp" 
                     Content="Solve"
                     Style="{StaticResource mazeButtons}"
                     Click="btnHelp_Click"/>
-            <Button x:Name="btnEXit"
+                <Button x:Name="btnEXit"
                     Content="Exit"
                     Style="{StaticResource mazeButtons}"
                     Click="btnEXit_Click"/>
-        </WrapPanel>
+            </WrapPanel>
+        </Viewbox>        
         <Viewbox Grid.Column="1"
                      Grid.Row="0"
                      Margin="0,5,0,0">
