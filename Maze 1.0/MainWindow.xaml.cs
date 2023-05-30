@@ -15,7 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace Maze_1._0
-{
+{   
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -27,10 +27,11 @@ namespace Maze_1._0
         Cell[,] cells;
         Cell[,] stepsOfSolution;        
         Pen _pen = new Pen(Brushes.Gray, 1);
-              
+        
         public MainWindow()
         {
-            InitializeComponent();            
+            InitializeComponent();
+            
         }
        
         private async void DrawCanv(int rows, int columns)
@@ -187,7 +188,7 @@ namespace Maze_1._0
 
         private void drawingCanvas_Loaded(object sender, RoutedEventArgs e)
         {
-
+            
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
