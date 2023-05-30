@@ -21,9 +21,12 @@ namespace Maze_1._0
         Cell currentCellAutoTemp;
         bool successMarkNewCell = false;       
         bool[] currentDirections = { false, false, false, false };
+        Stack<Cell> currentCellStack = new Stack<Cell>();
        // SidesOfWorld[] tempDirections;
        // int stepsAfterCrossWays = 0;
         int numberOfDirects = 0;
+        int succesfulDots = 0;
+        int crossWaysPosition = 0;
         Random random = new Random();
 
         public int Columns { get; private set; }
@@ -70,11 +73,11 @@ namespace Maze_1._0
         {
             gridOfCells[StartCellProp.X, StartCellProp.Y].MarkAsStepped(true);            
             //MakeAutoStepps();
-            MakeAutoSteppsByRecursion();
+            MakeAutoSteppsByStack();
             IsFinished = false;
         }
 
-        private void MakeAutoSteppsByRecursion()
+        private void MakeAutoSteppsByStack()
         {            
             currentCellAuto = StartCellProp;
 
@@ -107,22 +110,19 @@ namespace Maze_1._0
                     break;
                 }
             }
-           // while (!IsFinished)
-            {
+            int count = 0;
+             while (!IsFinished & count < 20)
+             {                
                 MakeSolutionSteps();
-                if (!successMarkNewCell)
-                {
-                    MakeSolutionStepBack();
-                }
-            }
-
+                count++;
+             }         
+                
         }
 
         private void MakeSolutionSteps()
         {
             for (int d = 0; d < 4; d++)
-            {
-                int qu = 0;
+            {                
                 if (currentDirections[d] == true)
                 {
                     MakeAStepByDirection(d);
@@ -130,9 +130,13 @@ namespace Maze_1._0
                     {
                         currentDirections = CurrentDirections(currentCellAuto);
                         numberOfDirects = AvailableDirection();
+                        if(IsFinished)
+                        {
+                            break;
+                        }  
                         if (numberOfDirects == 0 & !IsFinished)
                         {
-                            currentCellAuto = currentCellAutoTemp;
+                            MakeSolutionStepBack();                            
                             break;
                         }
                         else if (currentCellAuto == FinishCellProp)
@@ -150,11 +154,12 @@ namespace Maze_1._0
                                 }
                             }
                         }
-                        else if (numberOfDirects > 1 && qu < 20)
+                        else if (numberOfDirects > 1)
                         {
-                            qu++;
+                            crossWaysPosition = succesfulDots;
+                            MakeSolutionSteps();
                             break;
-                        }
+                        }                        
                     }
                 }
             }
@@ -162,7 +167,13 @@ namespace Maze_1._0
 
         private void MakeSolutionStepBack()
         {
-
+            int revers = succesfulDots - crossWaysPosition;
+            for (int i =0; i<revers; i++)
+            {
+                currentCellAuto.ClearAutoStep();
+                currentCellAuto =  currentCellStack.Pop();
+                succesfulDots--;
+            }
         }
 
         private void MakeAutoStepps()
@@ -239,7 +250,9 @@ namespace Maze_1._0
                     break;
             }
             CheckForFinish();
-            MakeNewAutoCell();           
+            MakeNewAutoCell();
+            currentCellStack.Push(currentCellAuto);
+            succesfulDots++;
         }
 
         private void MakeNewAutoCell()
