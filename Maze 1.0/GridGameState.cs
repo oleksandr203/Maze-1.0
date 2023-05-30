@@ -23,7 +23,7 @@ namespace Maze_1._0
         bool[] currentDirections = { false, false, false, false };
         SidesOfWorld[] tempDirections;
         int stepsAfterCrossWays = 0;
-        int direct = 0;
+        //int direct = 0;
         Random random = new Random();
 
         public int Columns { get; private set; }
@@ -74,10 +74,8 @@ namespace Maze_1._0
         }
 
         private void MakeAutoStepps()
-        {
-            ClearAutoHistory();
-            currentCellAuto = StartCellProp;
-            Random rand = new Random();
+        {            
+            currentCellAuto = StartCellProp;            
             currentDirections = CurrentDirections(currentCellAuto);
             stepsAfterCrossWays = 0;
             while (!IsFinished)
@@ -92,7 +90,7 @@ namespace Maze_1._0
                     {
                         stepsOfSolving[StartCellProp.X, StartCellProp.Y].MarkAsStepped(true);
                         currentDirections = CurrentDirections(currentCellAuto);
-                        AvailableDirection();
+                        int direct =  AvailableDirection();
                         if (direct == 0)
                         {
                             break;
@@ -174,7 +172,7 @@ namespace Maze_1._0
 
         private int AvailableDirection()
         {
-            direct = 0;
+            int direct = 0;
             foreach (var direction in currentDirections)
             {
                 if (direction)
