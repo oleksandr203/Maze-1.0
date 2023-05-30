@@ -23,7 +23,7 @@ namespace Maze_1._0
         bool[] currentDirections = { false, false, false, false };
         SidesOfWorld[] tempDirections;
         int stepsAfterCrossWays = 0;
-        int direct = 0;
+        int numberOfDirects = 0;
         Random random = new Random();
 
         public int Columns { get; private set; }
@@ -69,22 +69,60 @@ namespace Maze_1._0
         private void GenerateAutoSolution()
         {
             stepsOfSolving[StartCellProp.X, StartCellProp.Y].MarkAsStepped(true);            
-            MakeAutoStepps();
+            //MakeAutoStepps();
+            MakeAutoSteppsByRecursion();
             IsFinished = false;
         }
 
-        private void MakeAutoStepps()
+        private void MakeAutoSteppsByRecursion()
         {
-            ClearAutoHistory();
-            currentCellAuto = StartCellProp;
-            Random rand = new Random();
-            currentDirections = CurrentDirections(currentCellAuto);
+            stepsOfSolving[StartCellProp.X, StartCellProp.Y].MarkAsStepped(true);
+            void LocalF()
+            {
+                while (!IsFinished)                
+                {                   
+                    currentDirections = CurrentDirections(currentCellAuto);
+                    numberOfDirects = AvailableDirection();
+                    if (numberOfDirects == 0 & !IsFinished)
+                    {
+                        break;
+                    }
+                    if (currentCellAuto == FinishCellProp)
+                    {
+                        IsFinished = true;
+                    }
+                    if (numberOfDirects == 1)
+                    {
+                        for (int i = 0; i < 4; i++)
+                        {
+                            if (currentDirections[i] == true)
+                            {
+                                MakeAStepByDirection(i);
+                                break;
+                            }
+                        }
+                    }
+                    if (numberOfDirects > 1)
+                    {
+
+                        IsFinished = true;                        
+                        LocalF();
+                    }
+                }
+            }
+            currentCellAuto = StartCellProp;            
+            LocalF();
+        }
+
+        private void MakeAutoStepps()
+        {  
             stepsAfterCrossWays = 0;
             while (!IsFinished)
             {
                 int randTemp = random.Next(4);
-                ClearAutoHistory(); //for loop logic, to do fixing
+                ClearAutoHistory();
                 currentCellAuto = StartCellProp;
+                currentDirections = CurrentDirections(currentCellAuto);
                 for (int c = 0; c < 200; c++)
                 {
                     stepsAfterCrossWays = 0;
@@ -93,11 +131,11 @@ namespace Maze_1._0
                         stepsOfSolving[StartCellProp.X, StartCellProp.Y].MarkAsStepped(true);
                         currentDirections = CurrentDirections(currentCellAuto);
                         AvailableDirection();
-                        if (direct == 0)
+                        if (numberOfDirects == 0)
                         {
                             break;
                         }
-                        else if (direct == 1)
+                        else if (numberOfDirects == 1)
                         {
                             for (int i = 0; i < currentDirections.Length; i++)
                             {
@@ -112,40 +150,10 @@ namespace Maze_1._0
                             randTemp = random.Next(4);
                             while (!currentDirections[randTemp])
                             {
-                                randTemp = random.Next(4);
+                                randTemp  = random.Next(4);
                             }
                         }
-                        switch (randTemp)
-                        {
-                            case 0:
-                                {
-                                    currentCellAuto = gridOfCells[currentCellAuto.X, currentCellAuto.Y - 1]; //up
-                                    CheckForFinish();
-                                    MakeNewAutoCell();
-                                }
-                                break;
-                            case 1:
-                                {
-                                    currentCellAuto = gridOfCells[currentCellAuto.X + 1, currentCellAuto.Y];//right
-                                    CheckForFinish();
-                                    MakeNewAutoCell();
-                                }
-                                break;
-                            case 2:
-                                {
-                                    currentCellAuto = gridOfCells[currentCellAuto.X, currentCellAuto.Y + 1]; //down
-                                    CheckForFinish();
-                                    MakeNewAutoCell();
-                                }
-                                break;
-                            case 3:
-                                {
-                                    currentCellAuto = gridOfCells[currentCellAuto.X - 1, currentCellAuto.Y]; //left
-                                    CheckForFinish();
-                                    MakeNewAutoCell();
-                                }
-                                break;
-                        }
+                        MakeAStepByDirection(randTemp);   // here must be a logic of recurs adding                     
                     }
                     if (IsFinished)
                     {
@@ -154,6 +162,42 @@ namespace Maze_1._0
                 }
             }
         }
+
+        private void MakeAStepByDirection(int direct)
+        {
+            switch (direct)
+            {
+                case 0:
+                    {
+                        currentCellAuto = gridOfCells[currentCellAuto.X, currentCellAuto.Y - 1]; //up
+                        CheckForFinish();
+                        MakeNewAutoCell();
+                    }
+                    break;
+                case 1:
+                    {
+                        currentCellAuto = gridOfCells[currentCellAuto.X + 1, currentCellAuto.Y];//right
+                        CheckForFinish();
+                        MakeNewAutoCell();
+                    }
+                    break;
+                case 2:
+                    {
+                        currentCellAuto = gridOfCells[currentCellAuto.X, currentCellAuto.Y + 1]; //down
+                        CheckForFinish();
+                        MakeNewAutoCell();
+                    }
+                    break;
+                case 3:
+                    {
+                        currentCellAuto = gridOfCells[currentCellAuto.X - 1, currentCellAuto.Y]; //left
+                        CheckForFinish();
+                        MakeNewAutoCell();
+                    }
+                    break;
+            }
+        }
+
         private void MakeNewAutoCell()
         {
             currentCellAuto.MarkAsStepped(true);
@@ -174,13 +218,13 @@ namespace Maze_1._0
 
         private int AvailableDirection()
         {
-            direct = 0;
+            numberOfDirects = 0;
             foreach (var direction in currentDirections)
             {
                 if (direction)
-                    direct++;
+                    numberOfDirects++;
             }
-            return direct;
+            return numberOfDirects;
         }
 
         private void ClearAutoHistory()
