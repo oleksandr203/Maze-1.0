@@ -7,7 +7,7 @@
         <ResourceDictionary>
             <Style x:Key="mazeButtons">
                 <Setter Property = "Control.Height" Value="40"/>
-                <Setter Property = "Control.Width" Value="90"/>
+                
                 <Setter Property = "Control.BorderBrush" Value= "Brown"/>
                 <Setter Property = "Control.BorderThickness" Value="2"/>
                 <Setter Property = "Control.Margin" Value="8"/>
