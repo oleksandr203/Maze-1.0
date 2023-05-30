@@ -32,7 +32,7 @@ namespace Maze_1._0
             InitializeComponent();            
         }
        
-        private async void DrawCanv(int rows, int columns)
+        private void DrawCanv(int rows, int columns)
         {
             gameFieldCanvas.Width = 500;
             field = new GridGameState(columns, rows);
@@ -71,7 +71,7 @@ namespace Maze_1._0
             }
             RenderTargetBitmap bmp = new RenderTargetBitmap((int)gameFieldCanvas.Width + 25, (int)gameFieldCanvas.Height + 25, 100, 100, PixelFormats.Pbgra32);
             bmp.Render(drawingVisual);
-            canvasImage.Source = bmp;
+            canvasImage.Source = bmp;            
         }
 
         public void DrawPlayerSolving(int rows, int columns)
@@ -176,12 +176,8 @@ namespace Maze_1._0
 
         private void btnHelp_Click(object sender, RoutedEventArgs e)
         {
-            DrawAutoSolving((int)(gameFieldCanvas.Height / sizeOfCell), (int)(gameFieldCanvas.Width / sizeOfCell));
-            if(field.IsFinished)
-            {
-                GameOverMenu.Visibility = Visibility.Visible;
-            }            
-        }
+           DrawAutoSolving((int)(gameFieldCanvas.Height / sizeOfCell), (int)(gameFieldCanvas.Width / sizeOfCell));                                 
+        }        
 
         private void drawingCanvas_Loaded(object sender, RoutedEventArgs e)
         {
@@ -232,7 +228,7 @@ namespace Maze_1._0
 
         private void btnStart_Click_1(object sender, RoutedEventArgs e)
         {
-             DrawCanv((int)(gameFieldCanvas.Height / sizeOfCell), (int)(gameFieldCanvas.Width / sizeOfCell));
+             DrawCanv((int)(gameFieldCanvas.Height / sizeOfCell), (int)(gameFieldCanvas.Width / sizeOfCell));             
              DrawPlayerSolving((int)(gameFieldCanvas.Height / sizeOfCell), (int)(gameFieldCanvas.Width / sizeOfCell));        
         }
 
