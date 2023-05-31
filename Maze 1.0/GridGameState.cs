@@ -18,7 +18,7 @@ namespace Maze_1._0
         Cell currentPosition;
         Cell currentCell;
         Cell currentCellAuto;
-        Cell currentCellAutoTemp;
+        Cell currentCellAutoFromStack;
         bool successMarkNewCell = false;       
         bool[] currentDirections = { false, false, false, false };
         Stack<Cell> currentCellStack = new Stack<Cell>();
@@ -72,16 +72,14 @@ namespace Maze_1._0
         private void GenerateAutoSolution()
         {
             gridOfCells[StartCellProp.X, StartCellProp.Y].MarkAsStepped(true);            
-            //MakeAutoStepps();
             MakeAutoSteppsByStack();
             IsFinished = false;
         }
 
         private void MakeAutoSteppsByStack()
         {            
-            currentCellAuto = StartCellProp;
-
-            while (!IsFinished) //first part of solving
+            currentCellAuto = StartCellProp;                      
+            while (!IsFinished)
             {
                 currentDirections = CurrentDirections(currentCellAuto);
                 numberOfDirects = AvailableDirection();
@@ -106,72 +104,83 @@ namespace Maze_1._0
                 }
                 if (numberOfDirects > 1)
                 {
-                    currentCellAutoTemp = currentCellAuto;
-                    break;
+                    crossWaysPosition = succesfulDots;
+                    for (int i = 0; i < 4; i++)
+                    {
+                        if (currentDirections[i] == true)
+                        {
+                            bool fin = StepsByRecursion(i);
+                            if (!fin)
+                            {
+                                MakeSolutionStepBack();
+                                continue;
+                            }
+                            if(fin)
+                            {
+                                break;
+                            }
+                        }
+                    }                   
                 }
-            }
-            int count = 0;
-             while (!IsFinished & count < 20)
-             {                
-                MakeSolutionSteps();
-                count++;
-             }         
-                
+            }    
         }
 
-        private void MakeSolutionSteps()
+        private bool StepsByRecursion(int next)
         {
-            for (int d = 0; d < 4; d++)
-            {                
-                if (currentDirections[d] == true)
+            MakeAStepByDirection(next);
+            while (!IsFinished)
+            {
+                currentDirections = CurrentDirections(currentCellAuto);             
+                numberOfDirects = AvailableDirection();
+                if (numberOfDirects == 0)
                 {
-                    MakeAStepByDirection(d);
-                    while (!IsFinished)
+                    return false;
+                }
+                if (numberOfDirects == 1)
+                {
+                    for (int i = 0; i < 4; i++)
                     {
-                        currentDirections = CurrentDirections(currentCellAuto);
-                        numberOfDirects = AvailableDirection();
-                        if(IsFinished)
+                        if (currentDirections[i] == true)
                         {
-                            break;
-                        }  
-                        if (numberOfDirects == 0 & !IsFinished)
-                        {
-                            MakeSolutionStepBack();                            
-                            break;
+                            MakeAStepByDirection(i);
                         }
-                        else if (currentCellAuto == FinishCellProp)
-                        {
-                            IsFinished = true;
-                        }
-                        else if (numberOfDirects == 1)
-                        {
-                            for (int i = 0; i < 4; i++)
+                    }
+                }
+                if (numberOfDirects > 1)
+                {
+                    crossWaysPosition = succesfulDots;
+                    for (int i = 0; i < 4; i++)
+                    {
+                        if (currentDirections[i] == true)
+                        {                           
+                            if (!StepsByRecursion(i))
                             {
-                                if (currentDirections[i] == true)
+                                if (!IsFinished)
                                 {
-                                    MakeAStepByDirection(i);
-                                    break;
+                                    MakeSolutionStepBack();
+                                    return false;
+                                }
+                                if(IsFinished)
+                                {
+                                    return true;
                                 }
                             }
                         }
-                        else if (numberOfDirects > 1)
-                        {
-                            crossWaysPosition = succesfulDots;
-                            MakeSolutionSteps();
-                            break;
-                        }                        
                     }
-                }
+                    break;                   
+                }                
             }
+            return true;
         }
 
         private void MakeSolutionStepBack()
         {
             int revers = succesfulDots - crossWaysPosition;
-            for (int i =0; i<revers; i++)
+            for (int i = 0; i <= revers; i++)
             {
                 currentCellAuto.ClearAutoStep();
-                currentCellAuto =  currentCellStack.Pop();
+                currentCellAuto = currentCellStack.Pop();
+                currentDirections = CurrentDirections(currentCellAuto);
                 succesfulDots--;
             }
         }
@@ -224,41 +233,45 @@ namespace Maze_1._0
                   
         }
 
-        private void MakeAStepByDirection(int direct)
+        private Cell MakeAStepByDirection(int direct)
         {
-            switch (direct)
+            if(!IsFinished)
             {
-                case 0:
-                    {
-                        currentCellAuto = gridOfCells[currentCellAuto.X, currentCellAuto.Y - 1]; //up                        
-                    }
-                    break;
-                case 1:
-                    {
-                        currentCellAuto = gridOfCells[currentCellAuto.X + 1, currentCellAuto.Y];//right                        
-                    }
-                    break;
-                case 2:
-                    {
-                        currentCellAuto = gridOfCells[currentCellAuto.X, currentCellAuto.Y + 1]; //down                        
-                    }
-                    break;
-                case 3:
-                    {
-                        currentCellAuto = gridOfCells[currentCellAuto.X - 1, currentCellAuto.Y]; //left                       
-                    }
-                    break;
-            }
+                switch (direct)
+                {
+                    case 0:
+                        {
+                            currentCellAuto = gridOfCells[currentCellAuto.X, currentCellAuto.Y - 1]; //up                        
+                        }
+                        break;
+                    case 1:
+                        {
+                            currentCellAuto = gridOfCells[currentCellAuto.X + 1, currentCellAuto.Y];//right                        
+                        }
+                        break;
+                    case 2:
+                        {
+                            currentCellAuto = gridOfCells[currentCellAuto.X, currentCellAuto.Y + 1]; //down                        
+                        }
+                        break;
+                    case 3:
+                        {
+                            currentCellAuto = gridOfCells[currentCellAuto.X - 1, currentCellAuto.Y]; //left                       
+                        }
+                        break;
+                }
+            }            
             CheckForFinish();
             MakeNewAutoCell();
             currentCellStack.Push(currentCellAuto);
             succesfulDots++;
+            currentCellAutoFromStack = currentCellAuto;
+            return currentCellAutoFromStack;
         }
 
         private void MakeNewAutoCell()
         {
-            currentCellAuto.MarkAsStepped(true);
-            currentDirections = CurrentDirections(currentCellAuto);            
+            currentCellAuto.MarkAsStepped(true);            
         }
 
         private void CheckForFinish()
