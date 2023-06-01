@@ -28,8 +28,7 @@
         <Viewbox
             Grid.Row="0"
             Grid.Column="2"
-            MaxWidth="200">
-            
+            MaxWidth="200">            
             <WrapPanel Orientation="Vertical"                   
                    VerticalAlignment="Center"
                    HorizontalAlignment="Center">
@@ -62,8 +61,7 @@
                         Margin="1" 
                         Height="600"
                         Width="500" 
-                        VerticalAlignment="Center"
-                        Loaded="drawingCanvas_Loaded"
+                        VerticalAlignment="Center"                        
                         ClipToBounds="False">
                     <Image Name="canvasImage"/>
                     <Canvas x:Name="gameFieldCanvasSecondLayout"

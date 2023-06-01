@@ -6,11 +6,11 @@
     <Application.Resources>
         <ResourceDictionary>
             <Style x:Key="mazeButtons">
-                <Setter Property = "Control.Height" Value="40"/>
-                
+                <Setter Property = "Control.Height" Value="40"/>                
                 <Setter Property = "Control.BorderBrush" Value= "Brown"/>
                 <Setter Property = "Control.BorderThickness" Value="2"/>
                 <Setter Property = "Control.Margin" Value="8"/>
+                <Setter Property = "Control.MaxWidth" Value = "120"/>
                 <Setter Property = "ItemsControl.FontSize" Value="16"/>
             </Style>           
             

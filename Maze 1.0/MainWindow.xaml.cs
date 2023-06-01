@@ -57,16 +57,12 @@ namespace Maze_1._0
                                 PointScaleConvertDownRight(cells[c, r].GetPosition()));
                         }
                         if (cells[c, r].Id == 1)
-                        {
-                            drawingContext.DrawRoundedRectangle(null, new Pen(Brushes.Green, 4),
-                                new Rect(PointScaleConvertUpLeft(cells[c, r].GetPosition()), PointScaleConvertDownRight(cells[c, r].GetPosition())),
-                                sizeOfCell / 2, sizeOfCell / 2);
+                        {                            
+                            drawingContext.DrawEllipse(null, new Pen(Brushes.Green, 4), PointScaleConvertCenterCell(cells[c, r].GetPosition()), sizeOfCell / 3, sizeOfCell / 3);
                         }
                         if (cells[c, r].IsFinishCell)
-                        {                           
-                            drawingContext.DrawRoundedRectangle(null, new Pen(Brushes.OrangeRed, 4),
-                                new Rect(PointScaleConvertUpLeft(cells[c, r].GetPosition()), PointScaleConvertDownRight(cells[c, r].GetPosition())),
-                                sizeOfCell / 2, sizeOfCell / 2);
+                        {   
+                            drawingContext.DrawEllipse(null, new Pen(Brushes.DarkRed, 4), PointScaleConvertCenterCell(cells[c, r].GetPosition()), sizeOfCell / 3, sizeOfCell / 3);
                         }                        
                     }                   
                 }
@@ -76,12 +72,12 @@ namespace Maze_1._0
             canvasImage.Source = bmp;            
         }
 
-        public void DrawPlayerSolving()
+        public async void DrawPlayerSolving()
         {                   
-            DrawingVisual drawingVisual = new DrawingVisual();
+            DrawingVisual drawingVisual = new DrawingVisual();            
+            await Task.Run(() => steps = field.GetStepsPoints());
             using (DrawingContext drawingContext = drawingVisual.RenderOpen())
-            {                
-                steps = field.GetStepsPoints();
+            { 
                 for (int c = 0; c < field.Columns; c++)
                 {
                     for (int r = 0; r < field.Rows; r++)
@@ -181,13 +177,7 @@ namespace Maze_1._0
         private void btnHelp_Click(object sender, RoutedEventArgs e)
         {            
             btnHelp.IsEnabled = false;
-            DrawAutoSolving();
-            
-        }
-
-        private void drawingCanvas_Loaded(object sender, RoutedEventArgs e)
-        {
-            
+            DrawAutoSolving();            
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
@@ -217,7 +207,7 @@ namespace Maze_1._0
 
                 field.MarkLocalPlayerPositon();
                 DrawPlayerSolving();
-            }
+            }            
             if(field.IsFinished)
             {
                 GameOverMenu.Opacity = 50;
