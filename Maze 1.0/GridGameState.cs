@@ -73,7 +73,7 @@ namespace Maze_1._0
         {
             gridOfCells[StartCellProp.X, StartCellProp.Y].MarkAsStepped(true);            
             MakeAutoSteppsByStack();
-            //IsFinished = false;
+            IsFinished = false;
         }
 
         private void MakeAutoSteppsByStack()
@@ -108,6 +108,7 @@ namespace Maze_1._0
                     nodeCell = currentCellAuto;               
                     for (int i = 0; i < 4; i++)
                     {
+                        currentDirections = CurrentDirections(currentCellAuto);
                         if (currentDirections[i] == true)
                         {
                             bool fin = StepsByRecursion(i, nodeCell);                            
@@ -115,7 +116,7 @@ namespace Maze_1._0
                             {                               
                                 break;
                             }
-                            currentDirections = CurrentDirections(nodeCell);
+                            //currentDirections = CurrentDirections(nodeCell);
                             currentCellAuto = nodeCell;
                         }
                     }                   
@@ -124,8 +125,9 @@ namespace Maze_1._0
         }
 
         private bool StepsByRecursion(int next, Cell _nodeCell)
-        {    
-            Stack<Cell> tempCellsInStack = new Stack<Cell>(); //test
+        {
+            bool result = false;
+            Stack<Cell> tempCellsInStack = new Stack<Cell>();
             Cell tempUpperLevelCell = _nodeCell;
             Cell downNodeCell;           
             MakeAStepByDirection(next);
@@ -141,7 +143,7 @@ namespace Maze_1._0
                         stackCell.ClearAutoStep();
                     }                    
                     currentCellAuto = tempUpperLevelCell;
-                    return false;
+                    return result;
                 }
                 if (numberOfDirects == 1)
                 {
@@ -155,24 +157,20 @@ namespace Maze_1._0
                         }
                     }
                 }
-                if (numberOfDirects > 1)
-                {
-                    bool result = false;
+                if (numberOfDirects > 1 && !IsFinished)
+                {                    
                     downNodeCell = currentCellAuto;
                     for (int i = 0; i < 4; i++)
                     {
-
+                        currentDirections = CurrentDirections(currentCellAuto);
                         if (currentDirections[i] == true)
                         {
                             result = StepsByRecursion(i, downNodeCell);
                             if (IsFinished)
                             {
-                                return true;
-                            }
-                            if (!result)
-                            {
-                                continue;
-                            }
+                                result = true;
+                                return result;
+                            }                            
                         }
                     }
                         if(!result)
@@ -181,32 +179,12 @@ namespace Maze_1._0
                             {
                                 stackCell.ClearAutoStep();
                             }
-                            currentCellAuto = tempUpperLevelCell;
-                            //return false;
-                        }
-                    
+                            currentCellAuto = tempUpperLevelCell;                            
+                        }                    
                     return result;
                 }                
             }
-            return true;
-        }
-
-        private void MakeSolutionStepBack()
-        {
-            //int revers = succesfulDots - crossWaysPosition;
-            //for (int i = 0; i <= revers; i++)
-            //{
-            //    currentCellAuto.ClearAutoStep();
-            //    currentCellAuto = currentCellStack.Pop();
-            //    currentDirections = CurrentDirections(currentCellAuto);
-            //    succesfulDots--;
-            //}
-            //while(!currentCellAuto.IsNodalCell)
-            //{
-            //    currentCellAuto.ClearAutoStep();
-            //    currentCellAuto = currentCellStack.Pop();
-            //    currentDirections = CurrentDirections(currentCellAuto);
-            //}
+            return result;
         }
 
         private void MakeAutoStepps()
