@@ -30,8 +30,7 @@ namespace Maze_1._0
         
         public MainWindow()
         {
-            InitializeComponent();
-            
+            InitializeComponent();            
         }
        
         private async void DrawCanv(int rows, int columns)

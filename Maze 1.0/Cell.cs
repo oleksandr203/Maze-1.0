@@ -17,6 +17,7 @@ namespace Maze_1._0
         public bool IsFinishCell { get; private set; }
         public bool IsStepped { get; private set; } = false;  
         public bool IsSteppedBySolution { get; private set; }
+        public bool IsNodalCell { get; private set; }
         public int Id { get; private set; }
 
         public Cell(int column, int row) 
@@ -72,6 +73,14 @@ namespace Maze_1._0
             {
                 HorizontalWall = false;
             }           
+        }
+
+        public void SetNodal()
+        {
+            if(!IsNodalCell)
+            {
+                IsNodalCell = true;
+            }
         }
 
         public void ClearCell()
