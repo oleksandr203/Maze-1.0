@@ -43,6 +43,7 @@ namespace Maze_1._0
                 {
                     gridOfCells[c, r] = new Cell(c, r);
                     gridOfCells[c, r].SetEmptyCell();
+                    gridOfCells[c, r].ClearCell();
                 }
             }
             stepOnCells = new Cell[Columns, Rows];
@@ -470,28 +471,28 @@ namespace Maze_1._0
 
         private bool CanUp(Cell current)
         {
-            if (current.Y > 0 && gridOfCells[current.X, current.Y - 1].Id == 0) //here?
+            if (current.Y > 0 && !gridOfCells[current.X, current.Y - 1].IsBuild) 
                 return true;
             return false;
         }
 
         private bool CanDown(Cell current)
         {
-            if (current.Y < Rows - 1 && gridOfCells[current.X, current.Y + 1].Id == 0)
+            if (current.Y < Rows - 1 && !gridOfCells[current.X, current.Y + 1].IsBuild)
                 return true;
             return false;
         }
 
         private bool CanRight(Cell current)
         {
-            if (current.X < Columns - 1 && gridOfCells[current.X + 1, current.Y].Id == 0)
+            if (current.X < Columns - 1 && !gridOfCells[current.X + 1, current.Y].IsBuild)
                 return true;
             return false;
         }
 
         private bool CanLeft(Cell current)
         {
-            if (current.X > 0 && gridOfCells[current.X - 1, current.Y].Id == 0)
+            if (current.X > 0 && !gridOfCells[current.X - 1, current.Y].IsBuild)
                 return true;
             return false;
         }

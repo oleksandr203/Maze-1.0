@@ -19,9 +19,7 @@ namespace Maze_1._0
         public bool IsSteppedBySolution { get; private set; }
         public bool IsBuild { get; private set; }
         public bool IsEmpty { get; private set; }
-        
-        public int Id { get; private set; }
-
+       
         public Cell(int column, int row) 
         { 
             X = column;
@@ -34,7 +32,8 @@ namespace Maze_1._0
         {
             if(!IsStartCell)
             {
-                IsStartCell = true;                
+                IsStartCell = true; 
+                IsBuild = true;
             }
         }
 
@@ -47,11 +46,7 @@ namespace Maze_1._0
         }
 
         public void SetBuildFlagCell()
-        {
-            if (Id != 3)
-            {
-                Id = 3;
-            }
+        {             
             if (!IsBuild && !IsStartCell)
             {
                 IsBuild = true;
