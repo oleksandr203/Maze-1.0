@@ -67,27 +67,34 @@ namespace Maze_1._0
 
         private void GenerateAutoSolution()
         {
+            foreach (Cell cell in gridOfCells)
+            {
+                cell.ClearAutoStep();
+            }
             gridOfCells[StartCellProp.X, StartCellProp.Y].MarkAsStepped(true);            
             MakeAutoSteppsByStack();
             IsFinished = false;
         }
 
         private void MakeAutoSteppsByStack()
-        {
+        {           
             Cell nodeCell;
             currentCellAuto = StartCellProp;                      
             while (!IsFinished)
             {
                 currentDirections = CurrentDirections(currentCellAuto);
                 numberOfDirects = AvailableDirection();
-                if (numberOfDirects == 0 & !IsFinished)
-                {
-                    break;
-                }
                 if (currentCellAuto == FinishCellProp)
                 {
                     IsFinished = true;
+                    break;
                 }
+                else
+                if (numberOfDirects == 0)
+                {
+                    break;
+                }  
+                else
                 if (numberOfDirects == 1)
                 {
                     for (int i = 0; i < 4; i++)
@@ -99,6 +106,7 @@ namespace Maze_1._0
                         }
                     }
                 }
+                else
                 if (numberOfDirects > 1)
                 {
                     nodeCell = currentCellAuto;               
@@ -130,7 +138,13 @@ namespace Maze_1._0
             while (!IsFinished)
             {                
                 currentDirections = CurrentDirections(currentCellAuto);             
-                numberOfDirects = AvailableDirection();                
+                numberOfDirects = AvailableDirection();
+                if (currentCellAuto == FinishCellProp)
+                {
+                    IsFinished = true;
+                    return true;
+                }
+                else
                 if (numberOfDirects == 0)
                 {
                     foreach (var stackCell in tempCellsInStack)
@@ -140,6 +154,7 @@ namespace Maze_1._0
                     currentCellAuto = tempUpperLevelCell;
                     return result;
                 }
+                else
                 if (numberOfDirects == 1)
                 {
                     for (int i = 0; i < 4; i++)
@@ -152,7 +167,8 @@ namespace Maze_1._0
                         }
                     }
                 }
-                if (numberOfDirects > 1 && !IsFinished)
+                else
+                if (numberOfDirects > 1)
                 {                    
                     downNodeCell = currentCellAuto;
                     for (int i = 0; i < 4; i++)
@@ -224,7 +240,7 @@ namespace Maze_1._0
 
         private void CheckForFinish()
         {
-            if (currentCellAuto.X == FinishCellProp.X && currentCellAuto.Y == FinishCellProp.Y)
+            if (currentCellAuto == FinishCellProp)
             {
                IsFinished = true;
             }            
@@ -313,31 +329,39 @@ namespace Maze_1._0
         public void StepUp()
         {
             if (currentPosition.Y >= 1 && !gridOfCells[currentPosition.X, currentPosition.Y - 1].HorizontalWall)
+            {
                 currentPosition = stepOnCells[currentPosition.X, currentPosition.Y - 1];
+            }
         }
 
         public void StepDown()
         {
             if (!gridOfCells[currentPosition.X, currentPosition.Y].HorizontalWall && currentPosition.Y < Rows)
+            {
                 currentPosition = stepOnCells[currentPosition.X, currentPosition.Y + 1];
+            }               
         }
 
         public void StepLeft()
         {
             if (currentPosition.X >= 1 && !gridOfCells[currentPosition.X - 1, currentPosition.Y].VerticalWall)
+            {
                 currentPosition = stepOnCells[currentPosition.X - 1, currentPosition.Y];
+            }
         }
 
         public void StepRight()
         {
             if (!gridOfCells[currentPosition.X, currentPosition.Y].VerticalWall && currentPosition.X < Rows)
+            {
                 currentPosition = stepOnCells[currentPosition.X + 1, currentPosition.Y];
+            }               
         }
-        
+
         private bool IsFreeCell()
         {
             foreach (var cell in gridOfCells)
-                if (cell.Id == 0)
+                if (!cell.IsStartCell && !cell.IsFinishCell && !cell.IsBuild)
                 {
                     return true;
                 }
@@ -348,7 +372,7 @@ namespace Maze_1._0
         {
             List<Cell> cellCanBranch = new List<Cell>();
             foreach (var cell in gridOfCells)
-                if (cell.Id == 3)
+                if (cell.IsBuild)
                 {
                     cellCanBranch.Add(cell);
                 }
@@ -362,7 +386,7 @@ namespace Maze_1._0
 
             while (IsFreeCell())
             {
-                currentCell = SetFlags(rand.Next(4), currentCell);
+                currentCell = SetBuildFlags(rand.Next(4), currentCell);
                 if (successMarkNewCell)
                 {
                     successMarkNewCell = false;
@@ -371,7 +395,7 @@ namespace Maze_1._0
                 else if (!successMarkNewCell && variatyOfMaxWays > 0)
                 {
                     variatyOfMaxWays--;
-                    currentCell = SetFlags(rand.Next(4), currentCell);
+                    currentCell = SetBuildFlags(rand.Next(4), currentCell);
 
                     if (successMarkNewCell)
                     {
@@ -384,41 +408,41 @@ namespace Maze_1._0
             }
         }
 
-        private Cell SetFlags(int random, Cell currentCell)
+        private Cell SetBuildFlags(int random, Cell currentCell)
         {
             switch (random)
             {
                 case 0:
-                    if (CanUp(currentCell) && gridOfCells[currentCell.X, currentCell.Y - 1].Id == 0)
+                    if (CanUp(currentCell) && gridOfCells[currentCell.X, currentCell.Y - 1].IsEmpty)
                     {
-                        gridOfCells[currentCell.X, currentCell.Y - 1].SetFlagCell();
+                        gridOfCells[currentCell.X, currentCell.Y - 1].SetBuildFlagCell();
                         gridOfCells[currentCell.X, currentCell.Y - 1].NoWallDown();
                         successMarkNewCell = true;
                         return gridOfCells[currentCell.X, currentCell.Y - 1];
                     }
                     break;
                 case 1:
-                    if (CanDown(currentCell) && gridOfCells[currentCell.X, currentCell.Y + 1].Id == 0)
+                    if (CanDown(currentCell) && gridOfCells[currentCell.X, currentCell.Y + 1].IsEmpty)
                     {
-                        gridOfCells[currentCell.X, currentCell.Y + 1].SetFlagCell();
+                        gridOfCells[currentCell.X, currentCell.Y + 1].SetBuildFlagCell();
                         gridOfCells[currentCell.X, currentCell.Y].NoWallDown();
                         successMarkNewCell = true;
                         return gridOfCells[currentCell.X, currentCell.Y + 1];
                     }
                     break;
                 case 2:
-                    if (CanLeft(currentCell) && gridOfCells[currentCell.X - 1, currentCell.Y].Id == 0)
+                    if (CanLeft(currentCell) && gridOfCells[currentCell.X - 1, currentCell.Y].IsEmpty)
                     {
-                        gridOfCells[currentCell.X - 1, currentCell.Y].SetFlagCell();
+                        gridOfCells[currentCell.X - 1, currentCell.Y].SetBuildFlagCell();
                         gridOfCells[currentCell.X - 1, currentCell.Y].NoWallRight();
                         successMarkNewCell = true;
                         return gridOfCells[currentCell.X - 1, currentCell.Y];
                     }
                     break;
                 case 3:
-                    if (CanRight(currentCell) && gridOfCells[currentCell.X + 1, currentCell.Y].Id == 0)
+                    if (CanRight(currentCell) && gridOfCells[currentCell.X + 1, currentCell.Y].IsEmpty)
                     {
-                        gridOfCells[currentCell.X + 1, currentCell.Y].SetFlagCell();
+                        gridOfCells[currentCell.X + 1, currentCell.Y].SetBuildFlagCell();
                         gridOfCells[currentCell.X, currentCell.Y].NoWallRight();
                         successMarkNewCell = true;
                         return gridOfCells[currentCell.X + 1, currentCell.Y];
@@ -446,7 +470,7 @@ namespace Maze_1._0
 
         private bool CanUp(Cell current)
         {
-            if (current.Y > 0 && gridOfCells[current.X, current.Y - 1].Id == 0)
+            if (current.Y > 0 && gridOfCells[current.X, current.Y - 1].Id == 0) //here?
                 return true;
             return false;
         }

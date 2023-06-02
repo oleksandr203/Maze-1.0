@@ -16,7 +16,10 @@ namespace Maze_1._0
         public bool IsStartCell { get; private set; }
         public bool IsFinishCell { get; private set; }
         public bool IsStepped { get; private set; } = false;  
-        public bool IsSteppedBySolution { get; private set; }       
+        public bool IsSteppedBySolution { get; private set; }
+        public bool IsBuild { get; private set; }
+        public bool IsEmpty { get; private set; }
+        
         public int Id { get; private set; }
 
         public Cell(int column, int row) 
@@ -31,8 +34,7 @@ namespace Maze_1._0
         {
             if(!IsStartCell)
             {
-                IsStartCell = true;
-                Id = 1;
+                IsStartCell = true;                
             }
         }
 
@@ -40,22 +42,29 @@ namespace Maze_1._0
         {
             if (!IsFinishCell)
             {
-                IsFinishCell = true;
-                Id = 0;
+                IsFinishCell = true;              
             }
         }
 
-        public void SetFlagCell()
+        public void SetBuildFlagCell()
         {
             if (Id != 3)
             {
                 Id = 3;
             }
+            if (!IsBuild && !IsStartCell)
+            {
+                IsBuild = true;
+            }
         }
 
         public void SetEmptyCell()
         {
-             Id = 0;
+            if (!IsEmpty)
+            {
+                IsBuild = false;
+                IsEmpty = true;
+            }            
         }
 
         public void NoWallRight()
@@ -75,11 +84,9 @@ namespace Maze_1._0
         }
 
         public void ClearCell()
-        {
-            Id = 0;
-            IsStepped = false;
-            IsStartCell = false;
-            IsFinishCell = false;            
+        {            
+            SetEmptyCell();
+            IsStepped = false;                     
         }
         
         public void ClearAutoStep()
@@ -96,6 +103,7 @@ namespace Maze_1._0
             {
                 IsSteppedBySolution = true;
             }
+            else
             if (!IsStepped & !auto)
             {
                 IsStepped = true;

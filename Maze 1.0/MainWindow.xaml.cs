@@ -56,7 +56,7 @@ namespace Maze_1._0
                             drawingContext.DrawLine(_pen, PointScaleConvertDownLeft(cells[c, r].GetPosition()),
                                 PointScaleConvertDownRight(cells[c, r].GetPosition()));
                         }
-                        if (cells[c, r].Id == 1)
+                        if (cells[c, r].IsStartCell)
                         {                            
                             drawingContext.DrawEllipse(null, new Pen(Brushes.Green, 4), PointScaleConvertCenterCell(cells[c, r].GetPosition()), sizeOfCell / 3, sizeOfCell / 3);
                         }
@@ -116,9 +116,9 @@ namespace Maze_1._0
                     }
                 }                
             }
-            RenderTargetBitmap bmp = new RenderTargetBitmap((int)gameFieldCanvas.Width + 25, (int)gameFieldCanvas.Height + 25, 100, 100, PixelFormats.Pbgra32);
-            bmp.Render(drawingVisual);
-            canvasImageSecond.Source = bmp;
+            RenderTargetBitmap bmpAutoSolve = new RenderTargetBitmap((int)gameFieldCanvas.Width + 25, (int)gameFieldCanvas.Height + 25, 100, 100, PixelFormats.Pbgra32);
+            bmpAutoSolve.Render(drawingVisual);
+            canvasImageSecond.Source = bmpAutoSolve;
             btnHelp.IsEnabled = true;
         }
         
@@ -175,9 +175,9 @@ namespace Maze_1._0
         }
 
         private void btnHelp_Click(object sender, RoutedEventArgs e)
-        {            
+        {           
             btnHelp.IsEnabled = false;
-            DrawAutoSolving();            
+            DrawAutoSolving();                    
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
